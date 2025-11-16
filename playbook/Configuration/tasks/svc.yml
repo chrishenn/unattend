@@ -1,0 +1,145 @@
+---
+title: Svc
+description: Modify Services
+privilege: TrustedInstaller
+actions:
+  - !status: { status: 'Configuring services' }
+  - !registryKey: { path: 'HKLM\\System\\CurrentControlSet\\Services\\WdNisDrv' }
+  - !registryKey: { path: 'HKLM\\System\\CurrentControlSet001\\Services\\WdNisDrv' }
+  - !registryKey: { path: 'HKLM\\System\\CurrentControlSet\\Services\\WdNisSvc' }
+  - !registryKey: { path: 'HKLM\\System\\CurrentControlSet001\\Services\\WdNisSvc' }
+  - !taskKill: { name: 'devicecensus' }
+  - !taskKill: { name: 'UsoClient' }
+  - !taskKill: { name: 'MoUsoCoreWorker' }
+  - !taskKill: { name: 'wuauclt' }
+  - !taskKill: { name: 'SecurityHealthSystray' }
+  - !taskKill: { name: 'SecurityHealthService' }
+  - !taskKill: { name: 'searchfilterhost' }
+  - !taskKill: { name: 'searchhost' }
+  - !taskKill: { name: 'searchindexer' }
+
+  - !service: { name: 'iphlpsvc', operation: stop }
+  - !service: { name: 'Winmgmt', operation: stop }
+  - !service: { name: 'ClipSVC', operation: stop }
+  - !service: { name: 'dmwappushservice', operation: stop }
+  - !service: { name: 'LicenseManager', operation: stop }
+  - !service: { name: 'lfsvc', operation: stop }
+  - !service: { name: 'TrkWks', operation: stop }
+  - !service: { name: 'WbioSrvc', operation: stop }
+  - !service: { name: 'sharedaccess', operation: stop }
+
+  - !service: { name: 'SecurityHealthService', operation: delete }
+  - !service: { name: 'UsoSvc', operation: delete }
+  - !service: { name: 'WaaSMedicSvc', operation: delete }
+  - !service: { name: 'wuauserv', operation: delete }
+  - !service: { name: 'WpcMonSvc', operation: delete }
+  - !service: { name: 'WMPNetworkSvc', operation: delete }
+  - !service: { name: 'StorSvc', operation: delete }
+  - !service: { name: 'wisvc', operation: delete }
+  - !service: { name: 'Sense', operation: delete }
+  - !service: { name: 'UevAgentService', operation: delete }
+  - !service: { name: 'cloudidsvc', operation: delete }
+  - !service: { name: 'wscsvc', operation: delete }
+  - !service: { name: 'DoSvc', operation: delete }
+  - !service: { name: 'DiagTrack', operation: delete }
+  - !service: { name: 'InstallService', operation: delete }
+  - !service: { name: 'webthreatdefusersvc*', operation: delete, ignoreErrors: true }
+  - !service: { name: 'webthreatdefsvc', operation: delete, deleteUsingRegistry: true }
+
+  - !service: { name: 'Intel(R) Platform License Manager Service', operation: delete }
+  - !service: { name: 'cplspcon', operation: delete }
+  - !service: { name: 'WMIRegistrationService', operation: delete }
+  - !service: { name: 'jhi_service', operation: delete }
+  - !service: { name: 'ipfsvc', operation: delete }
+  - !service: { name: 'offloaditemservice', operation: delete }
+  - !service: { name: 'edgeupdate', operation: delete }
+  - !service: { name: 'edgeupdatem', operation: delete }
+  - !service: { name: 'gupdate', operation: delete }
+  - !service: { name: 'gupdatem', operation: delete }
+  - !service: { name: 'logi_lamparray_service', operation: delete }
+
+  - !service: { name: 'AppVClient', operation: change, startup: 4 }
+  - !service: { name: 'AssignedAccessManagerSvc', operation: change, startup: 4 }
+  - !service: { name: 'shpamsvc', operation: change, startup: 4 }
+  - !service: { name: 'tzautoupdate', operation: change, startup: 4 }
+  - !service: { name: 'CertPropSvc', operation: change, startup: 4 }
+  - !service: { name: 'dmwappushservice', operation: change, startup: 4 }
+  - !service: { name: 'DisplayEnhancementService', operation: change, startup: 4 }
+  - !service: { name: 'DispBrokerDesktopSvc', operation: change, startup: 4 }
+  - !service: { name: 'lfsvc', operation: change, startup: 4 }
+  - !service: { name: 'NcdAutoSetup', operation: change, startup: 4 }
+  - !service: { name: 'QWAVE', operation: change, startup: 4 }
+  - !service: { name: 'RasMan', operation: change, startup: 4 }
+  - !service: { name: 'TapiSrv', operation: change, startup: 4 }
+  - !service: { name: 'wcncsvc', operation: change, startup: 4 }
+  - !service: { name: 'CDPUserSvc_*', operation: change, startup: 4, deleteUsingRegistry: true }
+  - !service: { name: 'OneSyncSvc_*', operation: change, startup: 4, deleteUsingRegistry: true }
+  - !service: { name: 'pimindexmaintenancesvc_*', operation: change, startup: 4, deleteUsingRegistry: true }
+
+  - !service: { name: 'stisvc', operation: change, startup: 4 }
+  - !service: { name: 'MapsBroker', operation: change, startup: 4 }
+  - !service: { name: 'irmon', operation: change, startup: 4 }
+  - !service: { name: 'NetTcpPortSharing', operation: change, startup: 4 }
+  - !service: { name: 'RetailDemo', operation: change, startup: 4 }
+  - !service: { name: 'RemoteRegistry', operation: change, startup: 4 }
+  - !service: { name: 'Fax', operation: change, startup: 4 }
+  - !service: { name: 'WalletService', operation: change, startup: 4 }
+  - !service: { name: 'PhoneSvc', operation: change, startup: 4 }
+  - !service: { name: 'WwanSvc', operation: change, startup: 4 }
+  - !service: { name: 'icssvc', operation: change, startup: 4 }
+  - !service: { name: 'SmsRouter', operation: change, startup: 4 }
+  - !service: { name: 'SEMgrSvc', operation: change, startup: 4 }
+  - !service: { name: 'SCardSvr', operation: change, startup: 4 }
+  - !service: { name: 'ScDeviceEnum', operation: change, startup: 4 }
+  - !service: { name: 'SCPolicySvc', operation: change, startup: 4 }
+  - !service: { name: 'AJRouter', operation: change, startup: 4 }
+  - !service: { name: 'SNMPTRAP', operation: change, startup: 4 }
+  - !service: { name: 'spectrum', operation: change, startup: 4 }
+  - !service: { name: 'perceptionsimulation', operation: change, startup: 4 }
+  - !service: { name: 'WdBoot', operation: change, startup: 4 }
+  - !service: { name: 'WdFilter', operation: change, startup: 4 }
+  - !service: { name: 'WdNisDrv', operation: change, startup: 4 }
+  - !service: { name: 'WdNisSvc', operation: change, startup: 4 }
+  - !service: { name: 'WinDefend', operation: change, startup: 4 }
+  - !service: { name: 'SgrmBroker', operation: change, startup: 4 }
+  - !service: { name: 'RpcLocator', operation: change, startup: 4 }
+  - !service: { name: 'ALG', operation: change, startup: 4 }
+  - !service: { name: 'igccservice', operation: change, startup: 4 }
+  - !service: { name: 'CSC', operation: change, startup: 4 }
+  - !service: { name: 'CscService', operation: change, startup: 4 }
+  - !service: { name: 'wsearch', operation: change, startup: 4 }
+  - !service: { name: 'workfolderssvc', operation: change, startup: 4 }
+  - !service: { name: 'BITS', operation: change, startup: 3 }
+  - !service: { name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4 }
+  - !service: { name: 'XblAuthManager', operation: change, startup: 4 }
+  - !service: { name: 'XblGameSave', operation: change, startup: 4 }
+  - !service: { name: 'XboxNetApiSvc', operation: change, startup: 4 }
+  - !service: { name: 'XboxGipSvc', operation: change, startup: 4 }
+
+  - !run: { exeDir: true, exe: 'SERVICE.bat', weight: 20 }
+  - !registryValue: { path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules', value: 'Block Services', type: REG_SZ, data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\System32\amehost.exe|Name=Block Services|Desc=Block Certain Services Outbound UDP/TCP Traffic|' }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block SearchApp',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\SystemApps\Microsoft.Windows.Search_cw5n1h2txyewy\SearchApp.exe|Name=Block SearchApp|Desc=Block Cortana Outbound UDP/TCP Traffic|',
+    }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block SearchHost',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\SearchHost.exe|Name=Block SearchHost|Desc=Block Cortana Outbound UDP/TCP Traffic|',
+    }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block StartMenuExperienceHost',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\SystemApps\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\StartMenuExperienceHost.exe|Name=Block StartMenuExperienceHost|Desc=Block Cortana Outbound UDP/TCP Traffic|',
+    }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block SystemSettings',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\ImmersiveControlPanel\SystemSettings.exe|Name=Block SystemSettings|Desc=Block Windows Settings Outbound UDP/TCP Traffic|',
+    }
+  - !registryValue: { path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules', value: 'Block Explorer', type: REG_SZ, data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\explorer.exe|Name=Block Explorer|Desc=Block Explorer Outbound UDP/TCP Traffic|' }

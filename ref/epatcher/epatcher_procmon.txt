@@ -1,0 +1,39 @@
+﻿# create key
+
+'HKCU:\Software'
+'HKCU:\Software\ExplorerPatcher'
+
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ExplorerPatcher'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRectsLegacy'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\MMStuckRectsLegacy'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings\ZoneMap\'
+
+'HKCU:\Software\Classes'
+'HKCU:\Software\Classes\WOW6432Node'
+'HKCU:\Software\Classes\WOW6432Node\CLSID'
+'HKCU:\Software\Classes\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}'
+'HKCU:\Software\Classes\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs'
+
+'HKCU:\Software\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs'
+
+'HKCU:\Software\Classes\CLSID'
+'HKCU:\Software\Classes\CLSID\{d93ed569-3b3e-4bff-8355-3c44f6a52bb5}'
+'HKCU:\Software\Classes\CLSID\{d93ed569-3b3e-4bff-8355-3c44f6a52bb5}\InProcServer32'
+
+
+# set value
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRectsLegacy\Settings' 'BINARY' '30 00 00 00 FE FF FF FF 02 00 00 00 03 00 00 00'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StuckRects3\Settings' 'BINARY' '30 00 00 00 FE FF FF FF 02 00 00 00 03 00 00 00'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\MMStuckRectsLegacy\DELA246#5&884eb8f&0&UID4357' 'BINARY'  30 00 00 00 FE FF FF FF 00 00 00 00 03 00 00 00'
+
+'HKCU:\Software\Classes\WOW6432Node\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs\(Default)' 'STRING' '{64bc32b5-4eec-4de7-972d-bd8bd0324537}'
+'HKCU:\Software\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs\(Default)' 'STRING' '{64bc32b5-4eec-4de7-972d-bd8bd0324537}'
+
+# type: 0x18 ?? 'edit binary value' all zeros?
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ExplorerPatcher' 'Start_MaximumFrequentApps' 'unknown'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ExplorerPatcher' 'StartUI_ShowMoreTiles' 'unknown'
+'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\ExplorerPatcher' 'StartUI_EnableRoundedCorners' 'unknown'
+
+'HKCU:\Software\Classes\CLSID\{d93ed569-3b3e-4bff-8355-3c44f6a52bb5}\InProcServer32\(Default)' 'STRING' ''
+'HKCU:\Software\ExplorerPatcher\FileExplorerCommandUI' 'REG_DWORD' '2'

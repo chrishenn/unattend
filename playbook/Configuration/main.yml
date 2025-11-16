@@ -1,0 +1,11 @@
+---
+title: Custom
+description: Custom AME
+privilege: Admin
+actions:
+  - !task: { path: 'tasks\registry.yml' }
+  - !task: { path: 'tasks\appx.yml' }
+  - !task: { path: 'tasks\svc.yml' }
+  - !task: { path: 'tasks\component.yml' }
+  - !task: { path: 'tasks\file.yml' }
+  - !task: { path: 'tasks\config.yml' }

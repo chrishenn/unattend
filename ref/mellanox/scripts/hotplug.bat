@@ -1,0 +1,1 @@
+Regedit /s .\hotplug.reg

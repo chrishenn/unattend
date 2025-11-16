@@ -1,0 +1,33 @@
+---
+title: Config
+description: Misc Config
+privilege: TrustedInstaller
+actions:
+  - !status: { status: 'Modifying Start Menu' }
+  - !service: { name: 'WpnService', operation: stop, ignoreErrors: true }
+  - !service: { name: 'WpnUserService*', operation: stop, ignoreErrors: true }
+  - !taskKill: { name: 'explorer' }
+  - !file: { path: "%SYSTEMDRIVE%\\Users\\Public\\Desktop\\Microsoft Edge.lnk" }
+  - !file: { path: "%ALLUSERSPROFILE%\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Windows Media Player.lnk" }
+  - !file: { path: "%WINDIR%\\HelpPane.exe" }
+  - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.Core_cw5n1h2txyewy\\SystemSettingsExtensions.dll" }
+  - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SystemSettingsExtensions.dll" }
+  - !run: { exeDir: true, exe: 'CLEANUP.bat', weight: 30 }
+  - !run: { exe: 'explorer.exe', wait: false, runas: currentUser }
+
+  - !status: { status: 'Mitigating SFC' }
+  - !run: { exeDir: true, exe: 'SFCDEPLOY.bat', weight: 5 }
+
+  - !status: { status: 'Modifying Login Screen (hexing credprovhost.dll.mui)' }
+  - !run: { exeDir: true, exe: 'LOGIN.bat' }
+
+  - !status: { status: 'Modifying Lock Screen' }
+  - !registryValue: { path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager', value: 'RotatingLockScreenOverlayEnabled', type: REG_DWORD, data: '0' }
+  - !registryValue: { path: 'HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManager', value: 'SubscribedContent-338387Enabled', type: REG_DWORD, data: '0' }
+  - !registryValue: { path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableSpotlightCollectionOnDesktop', type: REG_DWORD, data: '1' }
+  - !registryValue: { path: 'HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent', value: 'DisableWindowsSpotlightFeatures', type: REG_DWORD, data: '1' }
+
+  - !status: { status: 'Setting Wallpaper' }
+  - !run: { exeDir: true, exe: 'WALLPAPER.bat', weight: 20 }
+  - !run: { exe: 'ame-hexer.exe', args: '"%WINDIR%\Resources\Themes\aero\Shell\NormalColor\shellstyle.dll" "3c69662069643d2261746f6d2848656c70427574746f6e29223e" "3c69662069643d2261746f6d282d2d2d52454d4f56454429223e" 120000', exeDir: true, weight: 60 }
+  - !run: { exe: 'ame-hexer.exe', args: '"%WINDIR%\Resources\Themes\aero\Shell\NormalColor\shellstyle.dll" "3c69662069643d2261746f6d2848656c70427574746f6e29223e" "3c69662069643d2261746f6d282d2d2d52454d4f56454429223e" 120000', exeDir: true, weight: 60 }

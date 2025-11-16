@@ -1,0 +1,58 @@
+---
+windows:
+  client:
+    shares:
+      - 'F: \\192.168.1.142\f'
+      - 'H: \\192.168.1.142\h'
+      - 'K: \\192.168.1.142\k'
+      - 'Q: \\192.168.1.142\q'
+    scoop_base:
+      - 7zip
+      - git
+      - aria2
+      - dark
+      - innounp
+      - lessmsi
+      - sudo
+      - pwsh
+    scoop_bucket:
+      - extras
+      - versions
+      - nerd-fonts
+      - chris https://github.com/chrishenn/scoops
+    scoop_app:
+      - googlechrome
+      - dra
+      - eza
+      - firacode-nf
+      - gh
+      - grep
+      - imageglass
+      - mise
+      - mpv
+      - nano
+      - obsidian
+      - tldr
+      - uutils-coreutils
+      - vcredist2022
+      - vscode
+      - wiztree
+      - windowsdesktop-runtime-lts
+      - chris/a4dj
+      - chris/docker
+      - chris/everything
+      - chris/hotkey
+      - chris/lnks
+      - chris/opgui
+      - chris/powertoys
+      - chris/steinberg
+      - chris/uavolt
+      - chris/wt
+      - chris/ssh
+      - chris/amesettings
+      - chris/openshell
+      - chris/epatcher
+    scoop_private:
+      - chris/zenprof
+      - chris/portable
+    scoop_shim:

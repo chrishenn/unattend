@@ -1,0 +1,13 @@
+[tools]
+gitleaks = "latest"
+hk = "latest"
+pkl = "latest"
+prettier = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+trufflehog = "latest"
+
+[env]
+HK_LIBGIT2 = 0
+HOST_SSH = "ssh chris@192.168.1.236"
+HOST_REPO = "/users/chris/unattend"

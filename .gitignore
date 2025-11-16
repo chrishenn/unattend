@@ -1,0 +1,9 @@
+.idea/
+/bin/
+amecli/
+amecli.zip
+iso/
+node_modules/
+auto_win.iso
+portable/portable/*
+zen/
