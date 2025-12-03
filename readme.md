@@ -20,6 +20,8 @@ where stability is needed.
 I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may not work well on other images.
 
 - Automate the windows 11 OOBE with an autounattend.xml file
+    - https://schneegans.de/windows/unattend-generator/
+    - debloat
 - Automate application of configurations and tweaks via script launched by the unattend file
     - apply custom settings
     - apply tweaks + debloat
@@ -44,6 +46,7 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 # (bash) package a bootable iso image, including scripts and configs from the local repo
 ./iso.sh pkg
 
+# disable secure boot on the target system
 # boot from iso
 # NOTE: this will wipe drive 0. I suggest removing all disks other than the one you intend to install windows onto
 # NOTE: windows installs the bootloader onto a random non-target-os drive. Recommended to remove other disks anyway
@@ -51,11 +54,10 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 # NOTE: REQUIRED TO LOG INTO THE GUI DESKTOP? AME FAILS TO RUN AS ADMIN WHEN CONNECT OVER SSH W/O LOGGING INTO GUI FIRST
 # NOTE: I've been running these over ssh after logging into the gui session. YMMV
 # NOTE: putting these mise/chezmoi steps into setup2.ps1 script causes mise to spazz out, so do them here
-$repo = "$HOME\unattend"
 $env:Path += ";$env:USERPROFILE\AppData\Local\mise\shims"
 mise use -g chezmoi op
 $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
-& "$repo\setup2.ps1" 'user' 'pass'
+& "$HOME\unattend\setup2.ps1" 'user' 'pass'
 ```
 
 ---
@@ -73,8 +75,6 @@ $repo = "$HOME\unattend"
 
 ## todo
 
-- [ ] use updated features from ref/updated_unattend.xml
-
 - [ ] programmatically launch tasks after reboot
     - [x] unattended: oobe
     - [x] unattended: login
@@ -82,52 +82,41 @@ $repo = "$HOME\unattend"
     - [ ] enable autologin for next boot
     - [ ] store secrets in env
     - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
-- [ ] software
-    - [x] zen: custom scoop manifest
-        - [x] apply settings
-    - [x] wt: custom scoop manifest
-        - [x] apply settings
-        - [x] right-click menu
-    - [x] epatcher: custom scoop manifest
-        - [x] apply settings (mostly)
-    - [x] openshell: custom scoop manifest
-        - [x] apply settings
-        - [x] add custom skin
-    - [x] powertoys: custom scoop manifest
-        - [x] include settings (requires manual import)
-    - [x] everything: custom scoop manifest
-        - [x] apply settings
-    - [x] ssh: custom scoop manifest
-        - [x] enable ssh server
-    - [x] universal audio driver
-    - [x] audio 4 DJ driver
-    - [x] yamaha steinberg driver
-    - [x] hotkey
-    - [x] portable
-    - [x] shortcut
-    - [x] lnks
-    - [x] nvidia app
-    - [x] nvidia driver
-    - [ ] vscode
-        - [ ] apply settings
-    - [ ] obsidian
-        - [ ] vault sync
-- [ ] set default apps
-    - [ ] browser: zen
-    - [ ] media player: mpv
-    - [ ] image viewer: imageglass
+- [ ] automate golden image creation
+    - [ ] boot a new base image and apply our mods as default user, then bake into golden image
 - [ ] network boot support
     - [ ] package the iso such that windows will use unattend.xml when pxe booting
     - [ ] package drivers into install environment + booted windows
         - [ ] dell xps laptop wifi
         - [ ] gigabyte, msi, asus mobo builtin ethernet
         - [ ] intel wifi
+- [ ] install common debloating functions as powershell manifests so that they can be re-run as needed
+    - edgeupdate, svc bloat like to re-install sometimes
+    - dpst likes to re-enable itself at random
+- [ ] software
+    - [x] see chrishenn/scoops
+    - [ ] obsidian
+        - [ ] vault sync
+    - [ ] scoop pwsh module to take a scoops subtree from my cfg.yml and install packages from it
+        - pkg install behavior switchable to: {best-effort, all-or-nothing}
+    - [ ] scoop pwsh module to run service de-bloat (in case they re-appear)
+    - [ ] chipset installers: amd, intel
+        - detect present cpu, install matching chipset
+        - <https://github.com/anxshi/various-infills>
+        - chipset scoop package for a given motherboard
+- [ ] set default apps
+    - [ ] browser: zen
+    - [ ] media player: mpv
+    - [ ] image viewer: imageglass
 - [ ] audio
     - [x] disable: audio ducking
     - [ ] disable: audio enhancements
     - [ ] disable: exclusive mode
 - [ ] tweak
     - [ ] set: file explorer sorting, columns
+    - [ ] disable: file contents indexing
+        - is this covered by disabling wsearch?
+    - [ ] default to "no": "allow windows to turn this device off to save power"
 - [x] AME
     - [x] script: windows updates
     - [x] script: windows activate

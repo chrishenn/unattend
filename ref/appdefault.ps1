@@ -591,7 +591,7 @@ process {
             Write-Host "`nScheduling forced restart for $((Get-Date).AddSeconds(60))."
 
             # Restart Computer
-            Start-Process shutdown.exe -ArgumentList "/r /t 60" -Wait -NoNewWindow
+            Start-Process shutdown.exe -a "/r /t 60" -Wait -NoNewWindow
         }
         elseif ($ExitCode -eq 0) {
             Write-Host -Object "`n[Warning] In order for the User Protection Driver updates to take immediate effect, you may need to restart the computer."
@@ -653,7 +653,7 @@ process {
             Write-Host "`nScheduling forced restart for $((Get-Date).AddSeconds(60))."
 
             # Restart Computer
-            Start-Process shutdown.exe -ArgumentList "/r /t 60" -Wait -NoNewWindow
+            Start-Process shutdown.exe -a "/r /t 60" -Wait -NoNewWindow
         }
         elseif ($ExitCode -eq 0) {
             Write-Host -Object "`n[Warning] In order for the User Protection Driver updates to take immediate effect, you may need to restart the computer."
@@ -679,7 +679,7 @@ process {
     ForEach ($UserProfile in $UserProfiles) {
         # Load User ntuser.dat if it's not already loaded
         If (!(Test-Path -Path Registry::HKEY_USERS\$($UserProfile.SID) -ErrorAction SilentlyContinue)) {
-            Start-Process -FilePath "cmd.exe" -ArgumentList "/C reg.exe LOAD HKU\$($UserProfile.SID) `"$($UserProfile.UserHive)`"" -Wait -WindowStyle Hidden
+            Start-Process -FilePath "cmd.exe" -a "/C reg.exe LOAD HKU\$($UserProfile.SID) `"$($UserProfile.UserHive)`"" -Wait -WindowStyle Hidden
             $ProfileWasLoaded.Add($UserProfile)
         }
 
@@ -712,7 +712,7 @@ process {
             # Unload NTuser.dat
             [gc]::Collect()
             Start-Sleep 1
-            Start-Process -FilePath "cmd.exe" -ArgumentList "/C reg.exe UNLOAD HKU\$($UserProfile.SID)" -Wait -WindowStyle Hidden | Out-Null
+            Start-Process -FilePath "cmd.exe" -a "/C reg.exe UNLOAD HKU\$($UserProfile.SID)" -Wait -WindowStyle Hidden | Out-Null
         }
     }
 
@@ -751,7 +751,7 @@ process {
             # Unload NTuser.dat
             [gc]::Collect()
             Start-Sleep 1
-            Start-Process -FilePath "cmd.exe" -ArgumentList "/C reg.exe UNLOAD HKU\$($UserProfile.SID)" -Wait -WindowStyle Hidden | Out-Null
+            Start-Process -FilePath "cmd.exe" -a "/C reg.exe UNLOAD HKU\$($UserProfile.SID)" -Wait -WindowStyle Hidden | Out-Null
         }
     }
 
@@ -778,7 +778,7 @@ process {
         Write-Host "`nScheduling forced restart for $((Get-Date).AddSeconds(60))."
 
         # Restart Computer
-        Start-Process shutdown.exe -ArgumentList "/r /t 60" -Wait -NoNewWindow
+        Start-Process shutdown.exe -a "/r /t 60" -Wait -NoNewWindow
     }
 
     exit $ExitCode

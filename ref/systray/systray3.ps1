@@ -101,7 +101,7 @@ Process
     }
 
     $table = BuildItemTable $stream
-    #$table.Keys | % { Write-Host "$_`: " -ForegroundColor Yellow -NoNewline; Write-Host $table[$_] }
+    #$table.Keys | % { Write-Host "$_`: " -f y -NoNewline; Write-Host $table[$_] }
 
     # there may be multiple entries in the stream for each program, e.g. DateInTray will
     # have one entry for every icon, 1..31!!

@@ -1,0 +1,7 @@
+[tools]
+just = "latest"
+trufflehog = "latest"
+
+[env]
+REMOTE_IP = "192.168.1.74"
+REMOTE_PORT = "22"

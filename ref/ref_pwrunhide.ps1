@@ -27,17 +27,17 @@ function unhide_powersettings (
 ) {
     # invoke with -render to write to file. otherwise, we'll unhide all elements with this script
     # invoke with -verbose to print each power option as it's unhidden (only applicable when render=false)
-    write-host -f cyan "power unhide"
+    write-host -f c "power unhide"
     if ($render) {
-        write-host -f cyan "writing power unhide script to $psscriptroot\unhide.ps1"
+        write-host -f c "writing power unhide script to $psscriptroot\unhide.ps1"
     } else {
-        write-host -f cyan "unhiding power options now"
+        write-host -f c "unhiding power options now"
     }
 
     $uidreg = '\w{8}-\w{4}-\w{4}-\w{4}-\w{12}'
-    $caps = Get-ciminstance -Namespace root\cimv2\power -Class Win32_PowerSettingCapabilities
-    $settings = Get-ciminstance -Namespace root\cimv2\power -Class Win32_PowerSetting
-    $settings_insubgrp = Get-ciminstance -Namespace root\cimv2\power -Class Win32_PowerSettingInSubgroup
+    $caps = gcim -Namespace root\cimv2\power -Class Win32_PowerSettingCapabilities
+    $settings = gcim -Namespace root\cimv2\power -Class Win32_PowerSetting
+    $settings_insubgrp = gcim -Namespace root\cimv2\power -Class Win32_PowerSettingInSubgroup
 
     foreach ($cap in $caps) {
         if (! ($cap.managedelement.instanceid -match $uidreg)) {
@@ -65,7 +65,7 @@ function unhide_powersettings (
             continue
         }
         if ($verbose) {
-            write-host -f cyan "unhiding: $($elem.ElementName)"
+            write-host -f c "unhiding: $($elem.ElementName)"
         }
         iex "${runcfg}"
     }

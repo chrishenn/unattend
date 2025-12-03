@@ -39,7 +39,7 @@ function InstallPortable (
         }
     }
 
-    write-host -f red "ERROR: no matching exe found in $dst; no lnk will be created"
+    write-host -f r "ERROR: no matching exe found in $dst; no lnk will be created"
     return 1
 }
 
@@ -53,5 +53,5 @@ function UninstallPortable (
         write-host -f green "uninstalled portable: '$appdir'"
         return
     }
-    write-host -f red "failed to uninstall portable: '$appdir'"
+    write-host -f r "failed to uninstall portable: '$appdir'"
 }

@@ -1,21 +1,13 @@
-$infs = Get-ChildItem -r 'C:\drivers' -Filter "*.inf"
-
-$infs = Get-ChildItem -r . -Filter "*.inf"
+$infs = Get-ChildItem "dir" -r -Filter "*inf"
 foreach ($inf in $infs) {
-    pnputil /add-driver $inf.FullName /install
+    pnputil /add-driver $inf.fullname /install
 }
 
-Get-ChildItem . -r -filter "*.inf"
+# no need to search recursively
+# pnputil /add-driver *.inf /install /subdirs
 
-foreach ($dir in (get-childitem -r -directory .)) {
-    pnputil /add-driver $dir offline /subdirs /install
+function pwshdev {
+    Install-Module DeviceManagement -force -SkipPublisherCheck
+    import-module devicemanagement
+    install-devicedriver -InfFilePath "here.inf"
 }
-
-
-foreach ($dir in (Get-ChildItem . -r -filter "*.inf") | split-path -parent) {
-#    pnputil /add-driver /subdirs /install .
-    $dir
-}
-
-Get-ChildItem . -r -filter "*.inf"
-Get-ChildItem .\* -r -include @("*.inf", "*.cat", "*.sys")

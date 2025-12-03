@@ -36,10 +36,42 @@ function openshell_install {
 }
 
 function epatcher_install {
-    write-host 'importing explorerpatcher settings (note: manual settings application required)'
-    scoop install chris/epatcher
-    # this acheives everything except "register as shell extension" which is a bit of a bummer
-    reg import $rsc\epatcher\epatcher.reg
+    if (-not (is_admin)) {
+        error "$app requires admin rights to $cmd"
+        break
+    }
+    $proc = start-process "$dir\ep_setup.exe" -NoNewWindow -passthru
+    if (-not $proc.waitforexit(10000)) {
+        error 'Failed installing explorerpatcher due to timeout (10 seconds)'
+        break
+    }
+    write-host ''
+    write-host -f y 'WARNING: ExplorerPatcher must be UNINSTALLED from an INTERACTIVE shell'
+    write-host -f green 'The ExplorerPatcher installer may have killed your desktop shell. This is normal.'
+    write-host -f green 'Please reboot to complete the installation'
+}
+
+function epatcher_uninstall {
+    if (-not (is_admin)) {
+        error "$app requires admin rights to $cmd"
+        break
+    }
+    function interactive {
+        $noni = [Environment]::GetCommandLineArgs() | Where-Object{ $_ -like '-NonI*' }
+        return ([Environment]::UserInteractive -and -not $noni)
+    }
+    if (-not (interactive)) {
+        write-host ''
+        write-host -f y 'ExplorerPatcher has no silent uninstaller; you must launch from an interactive shell'
+        write-host -f y 'and click through the uninstall dialogs in order to uninstall.'
+        error 'ExplorerPatcher: Uninstalling from noninteractive shell is not supported'
+        break
+    }
+    $proc = start-process "$dir\ep_setup.exe" -NoNewWindow -passthru -a '/uninstall'
+    if (-not $proc.waitforexit(10000)) {
+        error 'Failed uninstalling explorerpatcher due to timeout (10 seconds)'
+        break
+    }
 }
 
 function powertoys_install {
@@ -110,13 +142,13 @@ function zen_backup (
 function zen_install {
     $prof_src = "$repo\zen"
     if (! (test-path $prof_src)) {
-        write-host -f yellow "no zen profile found under playbook\resources\zen. skipping profile install"
+        write-host -f y "no zen profile found under playbook\resources\zen. skipping profile install"
         return
     }
 
     $prof_tgt = "$HOME\scoop\persist\zen-browser"
     if (-not $prof_tgt) {
-        write-host -f red "error: couldn't find system default installed profile dir"
+        write-host -f r "error: couldn't find system default installed profile dir"
         return 1
     }
     cp -r -force -ea 0 "$prof_src" "$prof_tgt"
@@ -226,7 +258,7 @@ function wt_install {
 
 function ssh_install {
     # manual ssh_install is needed while scoop buckets install a nonworking sshd server. permissions issue
-    write-host -f cyan "ssh_install"
+    write-host -f c "ssh_install"
     if (installed 'sshd') {
         write-host -f green "ssh_install: sshd already installed"
         return
@@ -332,7 +364,7 @@ function containers_client ($name) {
         }
     }
     if ($need_reboot) {
-        Write-host -F red "REBOOT REQUIRED TO ENABLE CONTAINER FEATURES"
+        Write-host -f r "REBOOT REQUIRED TO ENABLE CONTAINER FEATURES"
     }
     return $need_reboot
 }

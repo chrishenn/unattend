@@ -1,5 +1,5 @@
 function network_up {
-    $x = get-ciminstance Win32_NetworkAdapterConfiguration -filter DHCPEnabled=TRUE | where {$_.DefaultIPGateway -ne $null}
+    $x = gcim Win32_NetworkAdapterConfiguration -filter DHCPEnabled=TRUE | where {$_.DefaultIPGateway -ne $null}
     return ($x | measure).count -gt 0
 }
 
@@ -45,7 +45,7 @@ function mntshare (
 ) {
     $split = $pair.split(' ')
     if (-not ($split[0] -and $split[1])) {
-        write-host -f red "mntshare: 'pair' must include mount letter and network share path eg: 'H: \\192.168.1.142\h'"
+        write-host -f r "mntshare: 'pair' must include mount letter and network share path eg: 'H: \\192.168.1.142\h'"
     }
     New-SmbMapping -ea 0 -LocalPath $split[0] -RemotePath $split[1] -persistent $true
 }

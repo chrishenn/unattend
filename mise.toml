@@ -2,10 +2,11 @@
 gitleaks = "latest"
 hk = "latest"
 pkl = "latest"
-prettier = "latest"
 shellcheck = "latest"
 shfmt = "latest"
 trufflehog = "latest"
+chezmoi = "latest"
+#prettier = "latest" # mise os detection is broken on windows
 
 [env]
 HK_LIBGIT2 = 0

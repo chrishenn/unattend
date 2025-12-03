@@ -24,7 +24,7 @@ function acdc ($scheme, $cat, $id, $val) {
 }
 
 function network {
-    write-host -f cyan "network"
+    write-host -f c "network"
 
     # set ethernet* networks to private
     Get-NetConnectionProfile -InterfaceAlias 'Ethernet*' | Set-NetConnectionProfile -NetworkCategory 'Private'
@@ -42,7 +42,7 @@ function network {
 }
 
 function power {
-    write-host -f cyan "power"
+    write-host -f c "power"
 
     $out = powercfg /DuplicateScheme 'e9a42b02-d5df-448d-aa00-03f14749eb61'
     $pwrs = if ($out -match '\s([a-f0-9-]{36})\s') {
@@ -82,7 +82,7 @@ function power {
 }
 
 function tweak {
-    write-host -f cyan "tweak"
+    write-host -f c "tweak"
 
     # hide from explorer
     $ex = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer'
@@ -112,6 +112,9 @@ function tweak {
     rm -r -ea 0 "$ex\MyComputer\NameSpace\{A0953C92-50DC-43bf-BE83-3742FED03C9C}"
     hide "$ex\FolderDescriptions\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag"
     hide "$fd\{35286a68-3c57-41a1-bbb1-0eae73d76c95}\PropertyBag"
+
+    # icon cache size
+    setprop $ex 'MaxCachedIcons' 'String' 8192
 
     # explorer
     $stem = '\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
@@ -159,6 +162,8 @@ function tweak {
     setprop $key 'AllowDevelopmentWithoutDevLicense' 'DWORD' 1
     $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Sudo'
     setprop $key 'Enabled' 'DWORD' 1
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\CabinetState'
+    setprop $key 'FullPath' 'DWORD' 1
     $key = 'HKCU:\Control Panel\Bluetooth'
     setprop $key 'Notification Area Icon' 'DWORD' 0
     $key = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify'
@@ -232,29 +237,28 @@ function tweak {
 }
 
 function tweak_graphics {
-    # todo: these may need to be property '(default)' instead of 'defaultvalue'
     $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects'
-    setprop "$key\ControlAnimations" 'DefaultValue' 'DWORD' 0
     setprop "$key\AnimateMinMax" 'DefaultValue' 'DWORD' 0
-    setprop "$key\TaskbarAnimations" 'DefaultValue' 'DWORD' 0
-    setprop "$key\DWMAeroPeekEnabled" 'DefaultValue' 'DWORD' 0
-    setprop "$key\MenuAnimation" 'DefaultValue' 'DWORD' 0
-    setprop "$key\TooltipAnimation" 'DefaultValue' 'DWORD' 0
-    setprop "$key\SelectionFade" 'DefaultValue' 'DWORD' 0
-    setprop "$key\DWMSaveThumbnailEnabled" 'DefaultValue' 'DWORD' 0
-    setprop "$key\CursorShadow" 'DefaultValue' 'DWORD' 1
-    setprop "$key\ListviewShadow" 'DefaultValue' 'DWORD' 0
-    setprop "$key\ThumbnailsOrIcon" 'DefaultValue' 'DWORD' 1
-    setprop "$key\ListviewAlphaSelect" 'DefaultValue' 'DWORD' 1
-    setprop "$key\DragFullWindows" 'DefaultValue' 'DWORD' 1
     setprop "$key\ComboBoxAnimation" 'DefaultValue' 'DWORD' 0
+    setprop "$key\ControlAnimations" 'DefaultValue' 'DWORD' 0
+    setprop "$key\CursorShadow" 'DefaultValue' 'DWORD' 1
+    setprop "$key\DragFullWindows" 'DefaultValue' 'DWORD' 1
+    setprop "$key\DropShadow" 'DefaultValue' 'DWORD' 1
+    setprop "$key\DWMAeroPeekEnabled" 'DefaultValue' 'DWORD' 0
+    setprop "$key\DWMSaveThumbnailEnabled" 'DefaultValue' 'DWORD' 0
     setprop "$key\FontSmoothing" 'DefaultValue' 'DWORD' 1
     setprop "$key\ListBoxSmoothScrolling" 'DefaultValue' 'DWORD' 0
-    setprop "$key\DropShadow" 'DefaultValue' 'DWORD' 1
+    setprop "$key\ListviewAlphaSelect" 'DefaultValue' 'DWORD' 1
+    setprop "$key\ListviewShadow" 'DefaultValue' 'DWORD' 0
+    setprop "$key\MenuAnimation" 'DefaultValue' 'DWORD' 0
+    setprop "$key\SelectionFade" 'DefaultValue' 'DWORD' 0
+    setprop "$key\TaskbarAnimations" 'DefaultValue' 'DWORD' 0
+    setprop "$key\ThumbnailsOrIcon" 'DefaultValue' 'DWORD' 1
+    setprop "$key\TooltipAnimation" 'DefaultValue' 'DWORD' 0
 }
 
 function security {
-    write-host -f cyan "security"
+    write-host -f c "security"
 
     # script execution
     Set-ExecutionPolicy -force -scope LocalMachine -ExecutionPolicy bypass
@@ -317,25 +321,26 @@ function security {
 }
 
 function update {
-    write-host -f cyan "update"
+    write-host -f c "update"
     if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
         Install-Module PSWindowsUpdate -force
     }
     Import-Module PSWindowsUpdate
+    Get-WindowsUpdate -acceptall -MicrosoftUpdate -NotTitle OneDrive -Category Driver -Install -IgnoreReboot
     Install-WindowsUpdate -NotTitle OneDrive -AcceptAll -IgnoreReboot
 }
 
 function activate {
-    write-host -f cyan "activate"
+    write-host -f c "activate"
     try {
         iex "& {$(irm https://get.activated.win)} /HWID"
     } catch {
-        write-host -f red "SETUP: HWID activate failed"
+        write-host -f r "SETUP: HWID activate failed"
     }
 }
 
 function setup {
-    write-host -f cyan "setup start"
+    write-host -f c "setup start"
 
     security
     network_wait
@@ -349,10 +354,30 @@ function setup {
     tweak_graphics
 
     scoop_boot $cfg
-    if (nv_wait) {
-        scoop install chris/nvdriver
+
+    $cput = cpu
+    if ($cput -eq [Cpu]::amd) {
+        scoop install chris/amdchipset
+    }
+    if ($cput -eq [Cpu]::intel) {
+        scoop install chris/intelserialio
+    }
+    if (nvidia_gpu) {
+        scoop install chris/nvgfx
         scoop install chris/nvapp
     }
+    if (intel_apu) {
+        scoop install chris/intelgfx
+    }
+    if (amd_apu) {
+        scoop install chris/amdgfx
+    }
+    if (intel_wifi) {
+        scoop install chris/intelwifi
+        scoop install chris/intelbt
+    }
+    # todo: detect motherboard and (host and) install a driver package. make sure to deduplicate with scoops above
+
     update
     activate
 

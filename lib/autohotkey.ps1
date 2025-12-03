@@ -1,7 +1,7 @@
 function ah_deps {
     write-host "Installing autohotkey and compilation dependencies"
     if ($PSVersionTable.psversion.major -lt 7) {
-        write-host -f red"ERROR: pwsh version too low: use pwsh >= 7"
+        write-host -f r"ERROR: pwsh version too low: use pwsh >= 7"
         exit 1
     }
     if (! (gcm_app scoop)){
@@ -17,14 +17,14 @@ function ah_deps {
     $installer = "$ahdir\UX\install-ahk2exe.ahk"
 
     if (! (test-path $base)) {
-        write-host -f red "ERROR: autohotkey64.exe was not found at: $base"
+        write-host -f r "ERROR: autohotkey64.exe was not found at: $base"
         exit 1
     }
     if (! (test-path $ahk)) {
-        start-process $base -ArgumentList "/script $installer /silent /base $base" -Wait
+        start-process $base -a "/script $installer /silent /base $base" -Wait
     }
     if (! (test-path $ahk)) {
-        write-host -f red "ERROR: ahk2exe.exe compiler was not found at: $ahk"
+        write-host -f r "ERROR: ahk2exe.exe compiler was not found at: $ahk"
         exit 1
     }
 }
@@ -36,9 +36,9 @@ function ah_compile (
     # compile scripts from the scripts folder
     [void](mkdir -force -ea 0 $compiled)
     foreach ($path in $(Get-ChildItem -Path $scripts -Filter *.ahk -Name)) {
-        write-host -f cyan "Compiling $path"
+        write-host -f c "Compiling $path"
         $name = split-path $path -LeafBase
-        start-process $ahk -ArgumentList "/silent verbose /in $path /out $compiled\AH$name /base $base" -Wait
+        start-process $ahk -a "/silent verbose /in $path /out $compiled\AH$name /base $base" -Wait
     }
 }
 
@@ -55,7 +55,7 @@ function ah_kill {
     foreach ($exe in (Get-ChildItem $startup -Filter AH*.exe)) {
         $name = split-path $exe -Leafbase
         if (get-process -name $name -ea 0) {
-            write-host -f cyan "killing: $name"
+            write-host -f c "killing: $name"
             stop-process -name $name -force -ea 0
         }
         wait-process -name $name -ea 0
@@ -66,7 +66,7 @@ function ah_start {
     # start autohotkey binaries in startup folder. Match using name like 'AH*.exe'
     $startup = [System.Environment]::GetFolderPath("CommonStartUp")
     foreach ($path in (Get-ChildItem $startup -Filter AH*.exe).resolvedtarget) {
-        write-host -f cyan "starting: $path"
+        write-host -f c "starting: $path"
         start-process "$path"
     }
 }

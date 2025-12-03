@@ -1,97 +1,12 @@
-function nvapp_url (
-    [string] $search
-) {
-    $url = $null
-    $rsp = (iwr $search -usebasicparsing).Content
-    if ($rsp -match 'https:\/\/us\.download\.nvidia\.com\/nvapp\/client\/[\d\.]+\/NVIDIA_app_v[\d\.]+\.exe') {
-        $url = $matches[0]
-    } elseif ($rsp -match '<a[^>]*href="([^"]*nv[^"]*app[^"]*\.exe)"[^>]*>\s*<span[^>]*>DownloadNow<\/span>') {
-        $url = $matches[1]
-    } elseif ($rsp -match 'href="([^"]*nv[^"]*app[^"]*\.exe)"') {
-        $url = $matches[1]
-    }
-    return $url
-}
-
-function nvapp_insver {
-    $appPath = Join-Path -Path $env:ProgramFiles -ChildPath "NVIDIA Corporation\NVIDIA app\CEF\NVIDIA app.exe"
-    if (Test-Path $appPath) {
-        return (Get-Item $appPath | Select-Object -ExpandProperty VersionInfo).ProductVersion
-    }
-    return $null
-}
-
-function nvapp_install (
-    [switch] $force = $false,
-    [switch] $gpu_ignore = $false,
-    [string] $edition = "public"
-) {
-    # download and install the latest NVIDIA App
-    # edition: {"Enterprise", "Public"}
-    # force: proceed even if installed app ver matches latest ver
-    # gpu_ignore: proceed even if no nvidia gpu found
-
-    $pfx = "NVIDIA APP:"
-    Write-host "$pfx {Force: $force, Edition: $edition}"
-
-    if ($gpu = (nv_wait)) {
-        write-host "$pfx Found gpu: $($gpu.name)"
-    } elseif ($gpu_ignore) {
-        write-host "$pfx No NVIDIA GPU found but force is true; proceeding to install nvidia app"
-    } else {
-        throw "$pfx No NVIDIA GPU found. Exiting"
-    }
-
-    $search = if ($edition -eq "Enterprise") {
-        "https://www.nvidia.com/en-us/software/nvidia-app-enterprise/"
-    } else {
-        "https://www.nvidia.com/en-us/software/nvidia-app/"
-    }
-    Write-host "$pfx Scraping URL: $search"
-    if ($dl_url = nvapp_url $search) {
-        Write-host "$pfx Found download url: $dl_url"
-    } else {
-        throw "$pfx ERROR: No download url found"
-    }
-
-    $web_ver = if ($dl_url -match '_v(\d+\.\d+\.\d+\.\d+)\.exe') {
-        $matches[1]
-    } else {
-        "Unknown"
-    }
-    Write-host "$pfx Found download version: $web_ver"
-
-    # bug: this should check for installed <= latest
-    $inst_ver = nvapp_insver
-    if ($inst_ver -and $inst_ver -eq $web_ver -and -not $force) {
-        Write-host "$pfx Installed version $inst_ver matches latest from web, and force not set. Exiting"
-        return
-    }
-
-    Write-host "$pfx Downloading nvidia app installer"
-    $installer = "$HOME\nvidia_app.exe"
-    dl_retry $dl_url $installer
-
-    Write-host "$pfx Installing nvidia app"
-    Start-Process $installer -ArgumentList "-s -noreboot -noeula -nofinish -nosplash" -Wait
-    rm $installer
-
-    if ($inst_ver = nvapp_insver) {
-        Write-host "$pfx SUCCESS: found installed version: $inst_ver"
-    } else {
-        throw "$pfx ERROR: Could not find installed app after running installer"
-    }
-}
-
 function nvdriver_insver {
     try {
-        return ($(nv_vc).DriverVersion.Replace('.', '')[-5..-1] -join '').insert(3, '.')
+        return ($(nvidia_gpu).DriverVersion.Replace('.', '')[-5..-1] -join '').insert(3, '.')
     } catch {
         return $null
     }
 }
 
-function nvdriver_install (
+function nvdriver_install_full (
     [switch] $clean = $true,
     [switch] $force = $false,
     [switch] $gpu_ignore = $false,
@@ -178,7 +93,7 @@ function nvdriver_install (
     $extfiles = "Display.Driver NVI2 EULA.txt ListDevices.txt setup.cfg setup.exe"
     $extfiles = if ($physx) {$extfiles + ' PhysX'} else {$extfiles}
     $extfiles = if ($hdaudio) {$extfiles + ' HDAudio'} else {$extfiles}
-    Start-Process $zip -NoNewWindow -ArgumentList "x -bso0 -bsp1 -bse1 -aoa $drexe $extfiles -o$extdir" -wait
+    Start-Process $zip -NoNewWindow -a "x -bso0 -bsp1 -bse1 -aoa $drexe $extfiles -o$extdir" -wait
 
     $cfg = Get-Content "$extdir\setup.cfg" | Where-Object {$_ -notmatch 'name="\${{(EulaHtmlFile|FunctionalConsentFile|PrivacyPolicyFile)}}'}
     Set-Content "$extdir\setup.cfg" "$cfg" -Encoding UTF8 -Force
@@ -186,7 +101,7 @@ function nvdriver_install (
     Write-Host "$pfx Installing nvidia driver"
     $arg = '-passive -noreboot -noeula -nofinish -s'
     $arg = if ($clean) {$arg + " -clean"} else {$arg}
-    Start-Process "$extdir\setup.exe" -ArgumentList "$arg" -wait
+    Start-Process "$extdir\setup.exe" -a "$arg" -wait
     rm_force $tmpdir
 
     if ($task) {
@@ -205,4 +120,35 @@ function nvdriver_install (
     } else {
         throw "$pfx FAILURE: failed to find installed nvidia driver"
     }
+}
+
+function nvdriver_install {
+    # instead of copying out the eula files, we can patch out the refs to them in the setup.cfg manifest
+
+    $url = 'https://us.download.nvidia.com/Windows/581.80/581.80-desktop-win10-win11-64bit-international-dch-whql.exe'
+    irm -useb $url -outfile driver.exe
+
+    $dir = ".\nvdriver"
+    $files = "Display.Driver NVI2 EULA.txt ListDevices.txt setup.cfg setup.exe"
+    Start-Process 7z -wait -NoNewWindow -a "x -bso0 -bsp1 -bse1 -aoa driver.exe $files -o$dir"
+
+    $cfg = Get-Content "$dir\setup.cfg" | Where-Object {$_ -notmatch 'name=(.*)(EulaHtmlFile|FunctionalConsentFile|PrivacyPolicyFile)'}
+    Set-Content "$dir\setup.cfg" "$cfg" -Encoding UTF8 -Force
+
+    Start-Process -wait "$dir\setup.exe" -a '-s -n -noeula -nofinish -clean'
+}
+
+function nvdriver_install_ref {
+    # copy all the eula files from the nvapp package that's included in the driver installer package
+    $dir = ".\nvdriver"
+    $files = 'Display.Driver NVI2 setup.exe setup.cfg EULA.txt ListDevices.txt nvapp\FunctionalConsent* nvapp\PrivacyPolicy nvapp\Unified_EULA\*'
+    Start-Process -wait 7z -a "x -bso0 -bsp1 -bse1 -aoa driver.exe $files -o$dir"
+    Start-Process -wait "$dir\setup.exe" -a '-passive -noreboot -noeula -nofinish -s -clean'
+}
+
+function nvdriver_uninstall {
+    $pkg = 'Display.Driver'
+    $dll = 'C:\Program Files\NVIDIA Corporation\Installer2\InstallerCore\NVI2.DLL'
+    $argsl = """$dll"",UninstallPackage $pkg -silent -deviceinitiated"
+    Start-Process RunDll32 -wait -a $argsl
 }

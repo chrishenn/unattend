@@ -1,6 +1,12 @@
 function scoop_base (
-    [string[]] $basepkgs = @('7zip', 'git', 'aria2', 'dark', 'innounp', 'lessmsi', 'sudo', 'pwsh')
+    [string[]] $basepkgs = @()
 ) {
+    $minpkgs = @('7zip', 'git', 'aria2', 'dark', 'innounp', 'lessmsi', 'sudo', 'pwsh')
+    foreach ($pkg in $minpkgs) {
+        if (-not $basepkgs.contains($pkg)) {
+            $basepkgs += $pkg
+        }
+    }
     if (-not (gcm_app scoop)) {
         iex "& {$(irm get.scoop.sh -useb)} -RunAsAdmin"
         scoop install @basepkgs
@@ -28,7 +34,7 @@ function scoop_bucket (
 }
 
 function scoop_buckets (
-    [string[]] $buckets = @('extras', 'versions', 'nerd-fonts', 'chris https://github.com/chrishenn/scoops')
+    [string[]] $buckets = @()
 ) {
     # bucket add is idempotent; no need for manual check
     foreach ($name in $buckets) {
@@ -63,7 +69,7 @@ function scoop_shim (
     # adding shims using `scoop add` is NOT idempotent, so this check is necessary
     $split = $pair.split(' ')
     if (-not ($split[0] -and $split[1])) {
-        write-host -f yellow "scoop shim: malformed shim: $pair"
+        write-host -f y "scoop shim: malformed shim: $pair"
         return
     }
     if (scoop shim info $split[0]) {
@@ -108,29 +114,4 @@ function scoop_boot (
     if ($cfg.containskey("scoop_shim")) {
         scoop_shims $cfg.scoop_shim
     }
-}
-
-function scoop_boot_private (
-    [Hashtable] $cfg
-) {
-    if (-not $cfg.containskey("scoop_private")) {
-        write-host -f yellow "WARN (scoop_private): not key scoop_private in hashtable param 'cfg'"
-        return
-    }
-    if (-not (scoop config gh_token)) {
-        if (-not (installed op)) {
-            write-host -f red "ERROR (scoop_private): scoop gh_token not set and op is not installed"
-            return
-        }
-        if (-not $env:OP_SERVICE_ACCOUNT_TOKEN) {
-            write-host -f red "ERROR (scoop_private): scoop gh_token not set and OP_SERVICE_ACCOUNT_TOKEN not set"
-            return
-        }
-        scoop config gh_token (op read "op://homelab/github/credential")
-        if (-not (scoop config gh_token)) {
-            write-host -f red "ERROR (scoop_private): tried to set scoop gh_token but it's still empty"
-            return
-        }
-    }
-    scoop_apps $cfg.scoop_private
 }

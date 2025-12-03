@@ -42,7 +42,7 @@ function rm_force (
     [Parameter(Mandatory = $true)][string] $path
 ) {
     if (-not (test-path $path)) {
-        write-host -f yellow "not found: $path"
+        write-host -f y "not found: $path"
         return
     }
     [void](takeowner "$path")

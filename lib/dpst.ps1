@@ -28,16 +28,16 @@ function dpst (
     $enabled_str = if ($enabled) {"enabled"} else {"disabled"}
 
     if ($status) {
-        Write-host -f cyan "DPST is: $enabled_str"
+        Write-host -f c "DPST is: $enabled_str"
         return
     }
 
     $ftc_new = 0
     if ($enable -and -not $enabled) {
-        Write-host -f cyan "DPST is disabled; enabling"
+        Write-host -f c "DPST is disabled; enabling"
         $ftc_new = $ftc -band (-bnot $bitmask)
     } elseif (-not $enable -and $enabled) {
-        Write-host -f cyan "DPST is enabled; disabling"
+        Write-host -f c "DPST is enabled; disabling"
         $ftc_new = $ftc -bor $bitmask
     } else {
         Write-host -f green "DPST unchanged | requested {enabled: $enabled} | currently {enabled: $enabled}"

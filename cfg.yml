@@ -35,7 +35,6 @@ windows:
       - tldr
       - uutils-coreutils
       - vcredist2022
-      - vscode
       - wiztree
       - windowsdesktop-runtime-lts
       - chris/a4dj
@@ -49,6 +48,8 @@ windows:
       - chris/uavolt
       - chris/wt
       - chris/ssh
+      - chris/vscode
+      - chris/fpilot
       - chris/amesettings
       - chris/openshell
       - chris/epatcher

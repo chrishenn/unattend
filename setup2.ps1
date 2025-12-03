@@ -10,30 +10,9 @@ Start-Transcript -Append "$repo\log2.txt"
 (get-childitem "$repo\lib\*.ps1").foreach({. $_.FullName})
 $cfg = cfg_yml "$repo\cfg.yml"
 
-function file_rm {
-    rm_force "$HOME\Contacts"
-    rm_force "$HOME\Favorites"
-    rm_force "$HOME\Links"
-    rm_force "$HOME\Music"
-    rm_force "$HOME\Pictures"
-    rm_force "$HOME\Recent"
-    rm_force "$HOME\Videos"
-    rm_force "$HOME\PrintHood"
-    rm_force "$HOME\NetHood"
-    rm_force "$HOME\Cookies"
-    rm_force "$HOME\Templates"
-    rm_force "$HOME\SendTo"
-    rm_force "$HOME\Documents\My Music"
-    rm_force "$HOME\Documents\My Pictures"
-    rm_force "$HOME\Documents\My Videos"
 
-    # probably a bit too risky. these are for backwards-compatibility with ancient programs
-    # rm_force "$HOME\My Documents"
-    # rm_force "$HOME\Start Menu"
-    # rm_force "$HOME\Application Data"
-    # rm_force "$HOME\Local Settings"
-
-    # installer files packaegd into iso/$OEM$ are duplicated in these places
+function file_misc {
+    # installer files packaged into iso/$OEM$ are duplicated in these places
     rm_force 'C:\windows\configsetroot\sources\$OEM$'
     rm_force 'C:\windows\serviceprofiles\localservice\unattend'
     rm_force 'C:\windows\serviceprofiles\networkservice\unattend'
@@ -48,48 +27,47 @@ function file_rm {
     rm_force 'C:\Windows\SystemApps\Microsoft.MicrosoftEdgeDevToolsClient_*'
 }
 
-function file_pins {
-    # unpin all from quick access. NOTE: this is the "frequent folders" namespace!
-    $qa = new-object -com shell.application
-    $pins = $qa.NameSpace('shell:::{3936E9E4-D92C-4EEE-A85A-BC16D5EA0819}').items() | where {$_.IsFolder -eq 'True'}
-    if ($pins) {
-        $pins.InvokeVerb('unpinfromhome')
+function scoop_boot_private (
+    [Hashtable] $cfg
+) {
+    if (-not $cfg.containskey("scoop_private")) {
+        write-host -f y "WARN (scoop_private): not key scoop_private in hashtable param 'cfg'"
+        return
     }
-
-    # create new home
-    $nhome = "C:\home\$env:user"
-    $homeps = @("$nhome\Projects", "$nhome\Documents", "$nhome\Downloads")
-    foreach ($homep in $homeps) {
-        [void](mkdir -force -ea 0 $homep)
+    if (-not (scoop config gh_token)) {
+        if (-not (installed op)) {
+            write-host -f r "ERROR (scoop_private): scoop gh_token not set and op is not installed"
+            return
+        }
+        if (-not $env:OP_SERVICE_ACCOUNT_TOKEN) {
+            write-host -f r "ERROR (scoop_private): scoop gh_token not set and OP_SERVICE_ACCOUNT_TOKEN not set"
+            return
+        }
+        scoop config gh_token (op read "op://homelab/github/credential")
+        if (-not (scoop config gh_token)) {
+            write-host -f r "ERROR (scoop_private): tried to set scoop gh_token but it's still empty"
+            return
+        }
     }
-    foreach ($homep in $homeps) {
-        $qa.NameSpace($homep).self.invokeverb('pintohome')
-    }
-    $qa.NameSpace($repo).self.invokeverb('pintohome')
-}
-
-function file_extensions {
-    # show extensions
-    # [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\lnkfile' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\InternetShortcut' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\piffile' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\SHCmdFile' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\ShellScrap' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\DocShortcut' 'NeverShowExt')
-    [void](rp -force -ea 0 'registry::HKEY_CLASSES_ROOT\xnkfile' 'NeverShowExt')
+    scoop_apps $cfg.scoop_private
 }
 
 function setup2 {
-    write-host -f cyan "setup2 begin"
+    write-host -f c "setup2 begin"
 
-    file_rm
-    file_pins
+    file_misc
+    file_reparsepoints
+    file_clutter
+
     file_extensions
+    file_pins
 
     alienware
-    waves
-    killer
     edgeupdate
+    killer
+    waves
+    gigabyte
+
     dpst
     startups_rm @('SecurityHealth', 'Volt Driver Control Panel Autostart', 'waves')
     trays_hide @('universalaudio')
@@ -101,6 +79,9 @@ function setup2 {
     write-host -f green "setup2 done"
 }
 
+if ($PSVersionTable.PSVersion.Major -ge 6) {
+    Import-Module Appx -UseWindowsPowershell 3>$null
+}
 autologin $user $pass
 setup2
 restart-computer -f

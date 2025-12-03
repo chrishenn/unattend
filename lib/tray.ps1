@@ -18,10 +18,10 @@ function tray_hide (
         $exec = (Get-ItemProperty $child ExecutablePath -ea 0).ExecutablePath
 
         if ($print) {
-            write-host -f cyan "key: $exec"
+            write-host -f c "key: $exec"
         }
         if (($name) -and ($exec -match $name)) {
-            write-host -f Green "Setting tray: {key: $child, val: $val, program: $name}"
+            write-host -f green "Setting tray: {key: $child, val: $val, program: $name}"
             SetProp "$child" "IsPromoted" "DWord" $val
             $found = $true
             break

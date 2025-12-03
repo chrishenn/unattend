@@ -79,7 +79,7 @@ function dism_offline {
     if ($clean) {
         Remove-Item -Recurse "$tmp\iso"
     }
-    start-process 7z.exe -wait -NoNewWindow -argumentlist "x", "-y", "-o$tmp\iso", "$src_iso"
+    start-process 7z.exe -wait -NoNewWindow -a "x", "-y", "-o$tmp\iso", "$src_iso"
 
     $inst_wim = "$tmp\iso\sources\install.wim"
     $inst_indexes = $()

@@ -2,7 +2,7 @@ function sys_app (
     [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $name
 ) {
     # slow; deprecated. use reg_app instead
-    return (Get-ciminstance Win32_Product | Where-Object {$_.Name -match "$name"} | measure).count -gt 0
+    return (gcim Win32_Product | Where-Object {$_.Name -match "$name"} | measure).count -gt 0
 }
 
 function gcm_app (
@@ -46,10 +46,10 @@ function instexe (
     [int] $timeoutms = 60000
 ) {
     # silent install from exe with 1-minute timeout
-    write-host -f cyan "installing with 1-minute timeout: $exe"
-    $proc = start-process "$exe" -ArgumentList "$arg" -NoNewWindow -passthru
+    write-host -f c "installing with 1-minute timeout: $exe"
+    $proc = start-process "$exe" -a "$arg" -NoNewWindow -passthru
     if (-not ($proc.waitforexit($timeoutms))) {
-        write-host -f red "ERROR: timeout while installing: $exe"
+        write-host -f r "ERROR: timeout while installing: $exe"
         return 1
     }
 }
@@ -71,16 +71,16 @@ function find_ustr ($name) {
 function ustr ($name){
     # uninstall with msiexec via registry uninstall string
     if (! ($ustr = (find_ustr $name))) {
-        write-host -f red "failed to find uninstall string for: $name"
+        write-host -f r "failed to find uninstall string for: $name"
         return 1
     }
     if (! ($ustr -match 'msiexec')) {
-        write-host -f red "uninstall string is not msiexec for: $name"
+        write-host -f r "uninstall string is not msiexec for: $name"
         return 1
     }
     $ustr = $ustr.replace('msiexec.exe', '', 'OrdinalIgnoreCase')
     $ustr = $ustr.replace('msiexec', '', 'OrdinalIgnoreCase')
     $ustr += ' /quiet'
     echo "uninstalling with msiexec and: $ustr"
-    start-process msiexec -wait -NoNewWindow -argumentlist $ustr
+    start-process msiexec -wait -NoNewWindow -a $ustr
 }

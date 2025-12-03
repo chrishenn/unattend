@@ -6,6 +6,14 @@ enum Start {
     disabled = 4
 }
 
+function svc_regfind (
+    [string] $name
+) {
+    # match by service name, not by displayname. return found reg props
+    $key = "HKLM:\SYSTEM\CurrentControlSet\Services"
+    return (get-childitem $key | where-object {$_.PSChildName -match $name})
+}
+
 function svc_startup (
     [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $name,
     [Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][Start] $startup

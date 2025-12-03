@@ -1,12 +1,26 @@
+function rebuild_icon_cache {
+    # may need to stop explorer first
+    # stop-process -name explorer
+
+    cd "$env:userprofile\AppData\Local\Microsoft\Windows\Explorer"
+    attrib –h iconcache_*.db
+    del iconcache_*.db
+}
+
 function unpin_taskbar_allapps {
     $ws = New-Object -Com Shell.Application
     $ns = $ws.NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}')
-    $ns.items().verbs() | Where-Object{$_.Name.replace('&','') -match 'Unpin from taskbar'} | ForEach-Object{$_.DoIt()}
+    $unpins = $ns.items().verbs() | Where-Object{ $_.Name.replace('&','') -match 'Unpin from taskbar' }
+    $unpins | ForEach-Object{ $_.DoIt() }
 }
 
-function unpin_startmenu([string]$appname) {
-    ((New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').Items() |
-        Where-Object{$_.Name -eq $appname}).Verbs() | Where-Object{$_.Name.replace('&','') -match 'Unpin from Start'} | ForEach-Object{$_.DoIt()}
+function unpin_startmenu(
+    [string] $name
+) {
+    $ws = New-Object -Com Shell.Application
+    $ns = $ws.NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}')
+    $unpins = $ns.items().verbs() | Where-Object{ $_.Name.replace('&','') -match 'Unpin from Start' }
+    $unpins | ForEach-Object{ $_.DoIt() }
 }
 
 function unpin_taskbar_xml {
@@ -20,6 +34,7 @@ function unpin_taskbar_xml {
                 <CustomTaskbarLayoutCollection PinListPlacement="Replace">
                     <defaultlayout:TaskbarLayout>
                         <taskbar:TaskbarPinList>
+                            <taskbar:DesktopApp DesktopApplicationLinkPath="#leaveempty"/>
                         </taskbar:TaskbarPinList>
                     </defaultlayout:TaskbarLayout>
                 </CustomTaskbarLayoutCollection>
@@ -36,13 +51,11 @@ function unpin_taskbar_xml {
 
 function startmenu_pins {
     # copied from unattend
-    $json = '{"pinnedList":[]}'
     if([System.Environment]::OSVersion.Version.Build -lt 20000) {
         return
     }
     $key = 'HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\Start'
-    ni $key -ItemType 'Directory' -ea 0
-    setprop $key 'ConfigureStartPins' 'String' $json
+    setprop $key 'ConfigureStartPins' 'String' '{"pinnedList":[]}'
 }
 
 function color2int (
@@ -239,4 +252,18 @@ function debloat_contentdelivery {
     foreach($name in $names) {
         setprop $key $name 'DWORD' 0
     }
+}
+
+function home_reparsepoints {
+    # these are for backwards-compatibility with ancient programs
+    # probably not a good idea to remove
+
+    # C:\Users\chris
+    # Application Data -> C:\Users\chris\AppData\Roaming
+    # Local Settings -> C:\Users\chris\AppData\Local
+    # My Documents -> C:\Users\chris\Documents
+    # Start Menu -> C:\Users\chris\AppData\Roaming\Microsoft\Windows\Start Menu
+
+    $paths = Get-ChildItem $HOME -force
+    $rms = $paths | Where-Object {$_.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)}
 }

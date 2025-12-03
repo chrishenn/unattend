@@ -66,15 +66,15 @@ function startup_rm (
         switch ($source) {
             ([Sources]::registry) {
                 Remove-ItemProperty $path -Name $name -ErrorAction Stop
-                Write-Host "Removed $name from registry startup path: $path" -f Green
+                Write-Host -f green "Removed $name from registry startup path: $path"
             }
             ([Sources]::folder) {
                 Remove-Item (Join-Path -Path $path -ChildPath $name) -ErrorAction Stop
-                Write-Host "Removed $name from startup folder: $path" -f Green
+                Write-Host -f green "Removed $name from startup folder: $path"
             }
         }
     } catch {
-        Write-host "Failed to remove Name: $_.name" -f yellow
+        Write-host "Failed to remove Name: $_.name" -f y
     }
 }
 
@@ -83,10 +83,10 @@ function startups_rm (
     [switch] $print = $true,
     [switch] $verbose = $false
 ) {
-    Write-Host "Retrieving startup applications" -f Cyan
+    Write-Host "Retrieving startup applications" -f c
     $StartupApps = startups_reg + startups_folder
     if (-not $StartupApps) {
-        Write-Host "No startup applications found." -f Yellow
+        Write-Host "No startup applications found." -f y
         return
     }
     if ($print) {
@@ -101,7 +101,7 @@ function startups_rm (
         $SelectedApps += $StartupApps | where-object {$_.name -match "$name"}
     }
     if (-not $SelectedApps) {
-        write-host "no startup apps found to remove" -f Cyan
+        write-host "no startup apps found to remove" -f c
         return
     }
     foreach ($App in $SelectedApps) {

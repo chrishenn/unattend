@@ -38,78 +38,66 @@
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
 					<Order>4</Order>
-					<Path>cmd.exe /c "&gt;&gt;"X:\assert.vbs" (echo:On Error Resume Next&amp;echo:Set wmi = GetObject(^"winmgmts:\\.\root\cimv2^"^)&amp;echo:Set drive = wmi.Get(^"Win32_DiskDrive.DeviceID='\\.\PHYSICALDRIVE0'^"^)&amp;echo:If Err.Number ^&lt;^&gt; 0 Then&amp;echo:Msgbox Err.Description)"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>5</Order>
-					<Path>cmd.exe /c "&gt;&gt;"X:\assert.vbs" (echo:WScript.Quit 1&amp;echo:End If&amp;echo:If drive.InterfaceType = ^"IDE^" Or drive.InterfaceType = ^"SCSI^" Then&amp;echo:WScript.Quit 0&amp;echo:Else&amp;echo:MsgBox ^"Assertion failed.^"&amp;echo:WScript.Quit 1&amp;echo:End If)"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>6</Order>
-					<Path>cscript.exe //E:vbscript "X:\assert.vbs"</Path>
-				</RunSynchronousCommand>
-				<RunSynchronousCommand wcm:action="add">
-					<Order>7</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo:SELECT DISK=0&amp;echo:CLEAN&amp;echo:CONVERT GPT&amp;echo:CREATE PARTITION EFI SIZE=300&amp;echo:FORMAT QUICK FS=FAT32 LABEL=^"System^"&amp;echo:ASSIGN LETTER=S&amp;echo:CREATE PARTITION MSR SIZE=16&amp;echo:CREATE PARTITION PRIMARY)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>8</Order>
+					<Order>5</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\diskpart.txt" (echo:FORMAT QUICK FS=NTFS LABEL=^"Windows^"&amp;echo:ASSIGN LETTER=W)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>9</Order>
+					<Order>6</Order>
 					<Path>cmd.exe /c "diskpart.exe /s "X:\diskpart.txt" &gt;&gt;"X:\diskpart.log" || ( type "X:\diskpart.log" &amp; echo diskpart encountered an error. &amp; pause &amp; exit /b 1 )"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>10</Order>
+					<Order>7</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:WScript.Echo ^"Scanning for newly created SYSTEM registry hive file to disable Windows Defender services...^"&amp;echo:Set fso = CreateObject(^"Scripting.FileSystemObject^"^))"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>11</Order>
+					<Order>8</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:Set existing = CreateObject(^"Scripting.Dictionary^"^)&amp;echo:Function Execute(command^)&amp;echo:WScript.Echo ^"Running command '^" + command + ^"'^"&amp;echo:Set shell = CreateObject(^"WScript.Shell^"^))"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>12</Order>
+					<Order>9</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:Set exec = shell.Exec(command^)&amp;echo:Do While exec.Status = 0&amp;echo:WScript.Sleep 100&amp;echo:Loop&amp;echo:WScript.Echo exec.StdOut.ReadAll&amp;echo:WScript.Echo exec.StdErr.ReadAll&amp;echo:Execute = exec.ExitCode)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>13</Order>
+					<Order>10</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:End Function&amp;echo:Function FindHiveFiles&amp;echo:Set FindHiveFiles = CreateObject(^"Scripting.Dictionary^"^)&amp;echo:For Each drive In fso.Drives&amp;echo:If drive.IsReady And drive.DriveLetter ^&lt;^&gt; ^"X^" Then)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>14</Order>
+					<Order>11</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:For Each folder In Array(^"$Windows.~BT\NewOS\Windows^", ^"Windows^"^)&amp;echo:file = fso.BuildPath(fso.BuildPath(drive.RootFolder, folder^), ^"System32\config\SYSTEM^"^))"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>15</Order>
+					<Order>12</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:If fso.FileExists(file^) And fso.FileExists(file + ^".LOG1^"^) And fso.FileExists(file + ^".LOG2^"^) Then&amp;echo:FindHiveFiles.Add file, Nothing&amp;echo:End If&amp;echo:Next&amp;echo:End If&amp;echo:Next&amp;echo:End Function)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>16</Order>
+					<Order>13</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:For Each file In FindHiveFiles&amp;echo:WScript.Echo ^"Will ignore file at '^" + file + ^"' because it was already present when Windows Setup started.^"&amp;echo:existing.Add file, Nothing&amp;echo:Next&amp;echo:Do)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>17</Order>
+					<Order>14</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:For Each file In FindHiveFiles&amp;echo:If Not existing.Exists(file^) Then&amp;echo:ret = 1&amp;echo:While ret ^&gt; 0&amp;echo:WScript.Sleep 500&amp;echo:ret = Execute(^"reg.exe LOAD HKLM\mount ^" + file^)&amp;echo:Wend)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>18</Order>
+					<Order>15</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:For Each service In Array(^"Sense^", ^"WdBoot^", ^"WdFilter^", ^"WdNisDrv^", ^"WdNisSvc^", ^"WinDefend^"^))"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>19</Order>
+					<Order>16</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:ret = Execute(^"reg.exe ADD HKLM\mount\ControlSet001\Services\^" + service + ^" /v Start /t REG_DWORD /d 4 /f^"^)&amp;echo:Next&amp;echo:ret = Execute(^"reg.exe UNLOAD HKLM\mount^"^))"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>20</Order>
+					<Order>17</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:WScript.Echo ^"Found and successfully modified SYSTEM registry hive file at '^" + file + ^"'. This window will now close.^"&amp;echo:WScript.Sleep 5000&amp;echo:Exit Do&amp;echo:End If&amp;echo:WScript.Sleep 1000&amp;echo:Next)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>21</Order>
+					<Order>18</Order>
 					<Path>cmd.exe /c "&gt;&gt;"X:\defender.vbs" (echo:Loop)"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
-					<Order>22</Order>
+					<Order>19</Order>
 					<Path>cmd.exe /c "start /MIN cscript.exe //E:vbscript X:\defender.vbs"</Path>
 				</RunSynchronousCommand>
 			</RunSynchronous>
@@ -125,7 +113,7 @@
 			<RunSynchronous>
 				<RunSynchronousCommand wcm:action="add">
 					<Order>1</Order>
-					<Path>powershell.exe -WindowStyle Hidden -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+					<Path>powershell.exe -WindowStyle Hidden -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -a $xml;"</Path>
 				</RunSynchronousCommand>
 				<RunSynchronousCommand wcm:action="add">
 					<Order>2</Order>
@@ -300,7 +288,7 @@ $logfile = 'C:\Windows\Setup\Scripts\RemovePackages.log';
 		}
 		$result | ConvertTo-Json -Depth 3 -Compress;
 	}
-} *&gt;&amp;1 | Out-String &gt;&gt; $logfile;
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; $logfile;
 		</File>
 		<File path="C:\Windows\Setup\Scripts\RemoveCapabilities.ps1">
 $selectors = @(
@@ -364,7 +352,7 @@ $logfile = 'C:\Windows\Setup\Scripts\RemoveCapabilities.log';
 		}
 		$result | ConvertTo-Json -Depth 3 -Compress;
 	}
-} *&gt;&amp;1 | Out-String &gt;&gt; $logfile;
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; $logfile;
 		</File>
 		<File path="C:\Windows\Setup\Scripts\RemoveFeatures.ps1">
 $selectors = @(
@@ -415,7 +403,7 @@ $logfile = 'C:\Windows\Setup\Scripts\RemoveFeatures.log';
 		}
 		$result | ConvertTo-Json -Depth 3 -Compress;
 	}
-} *&gt;&amp;1 | Out-String &gt;&gt; $logfile;
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; $logfile;
 		</File>
 		<File path="C:\Windows\Setup\Scripts\TaskbarLayoutModification.xml">
 &lt;LayoutModificationTemplate xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification" xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" xmlns:taskbar="http://schemas.microsoft.com/Start/2014/TaskbarLayout" Version="1"&gt;
@@ -503,16 +491,6 @@ $key = 'Registry::HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start';
 New-Item -Path $key -ItemType 'Directory' -ErrorAction 'SilentlyContinue';
 Set-ItemProperty -LiteralPath $key -Name 'ConfigureStartPins' -Value $json -Type 'String';
 		</File>
-		<File path="C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml">
-&lt;LayoutModificationTemplate Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification"&gt;
-	&lt;LayoutOptions StartTileGroupCellWidth="6" /&gt;
-	&lt;DefaultLayoutOverride&gt;
-		&lt;StartLayoutCollection&gt;
-			&lt;StartLayout GroupCellWidth="6" xmlns="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" /&gt;
-		&lt;/StartLayoutCollection&gt;
-	&lt;/DefaultLayoutOverride&gt;
-&lt;/LayoutModificationTemplate&gt;
-		</File>
 		<File path="C:\Windows\Setup\Scripts\unattend-01.ps1">
 &amp; C:\users\chris\unattend\setup.ps1
 		</File>
@@ -587,14 +565,13 @@ $scripts = @(
 		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f;
 	};
 	{
+		Remove-Item -LiteralPath 'C:\Users\Public\Desktop\Microsoft Edge.lnk' -ErrorAction 'SilentlyContinue' -Verbose;
+	};
+	{
 		Set-ExecutionPolicy -Scope 'LocalMachine' -ExecutionPolicy 'RemoteSigned' -Force;
 	};
 	{
 		fsutil.exe behavior set disableLastAccess 1;
-	};
-	{
-		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v AUOptions /t REG_DWORD /d 4 /f;
-		reg.exe add "HKLM\SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate\AU" /v NoAutoRebootWithLoggedOnUsers /t REG_DWORD /d 1 /f;
 	};
 	{
 		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Power" /v HiberbootEnabled /t REG_DWORD /d 0 /f;
@@ -628,7 +605,7 @@ $scripts = @(
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\TooltipAnimation" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\SelectionFade" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\DWMSaveThumbnailEnabled" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
-		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\CursorShadow" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
+		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\CursorShadow" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ListviewShadow" -Name 'DefaultValue' -Value 0 -Type 'DWord' -Force;
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ThumbnailsOrIcon" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
 		Set-ItemProperty -LiteralPath "Registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects\ListviewAlphaSelect" -Name 'DefaultValue' -Value 1 -Type 'DWord' -Force;
@@ -663,7 +640,7 @@ $scripts = @(
     "`r`n" * 3;
     $complete += $increment;
   }
-} *&gt;&amp;1 | Out-String &gt;&gt; "C:\Windows\Setup\Scripts\Specialize.log";
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; "C:\Windows\Setup\Scripts\Specialize.log";
 		</File>
 		<File path="C:\Windows\Setup\Scripts\UserOnce.ps1">
 $scripts = @(
@@ -672,6 +649,16 @@ $scripts = @(
 	};
 	{
 		[System.Diagnostics.EventLog]::WriteEntry( 'UnattendGenerator', "User '$env:USERNAME' has requested to unlock the Start menu layout.", [System.Diagnostics.EventLogEntryType]::Information, 1 );
+	};
+	{
+		@(
+		  Get-ChildItem -LiteralPath $env:USERPROFILE -Force -Recurse -Depth 2;
+		) | Where-Object -FilterScript {
+			$_.Attributes.HasFlag( [System.IO.FileAttributes]::ReparsePoint );
+		} | Remove-Item -Force -Recurse -Verbose;
+	};
+	{
+		Remove-Item -LiteralPath "${env:USERPROFILE}\Desktop\Microsoft Edge.lnk" -ErrorAction 'SilentlyContinue' -Verbose;
 	};
 	{
 		Set-ItemProperty -LiteralPath 'Registry::HKCU\AppEvents\Schemes' -Name '(Default)' -Type 'String' -Value '.None';
@@ -751,7 +738,7 @@ $scripts = @(
     "`r`n" * 3;
     $complete += $increment;
   }
-} *&gt;&amp;1 | Out-String &gt;&gt; "$env:TEMP\UserOnce.log";
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; "$env:TEMP\UserOnce.log";
 		</File>
 		<File path="C:\Windows\Setup\Scripts\DefaultUser.ps1">
 $scripts = @(
@@ -841,9 +828,6 @@ $scripts = @(
 		reg.exe add "HKU\DefaultUser\Control Panel\Accessibility\StickyKeys" /v Flags /t REG_SZ /d 10 /f;
 	};
 	{
-		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\DWM" /v ColorPrevalence /t REG_DWORD /d 0 /f;
-	};
-	{
 		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v "UnattendedSetup" /t REG_SZ /d "powershell.exe -WindowStyle Hidden -NoProfile -Command \""Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\UserOnce.ps1' -Raw | Invoke-Expression;\""" /f;
 	};
 );
@@ -868,12 +852,23 @@ $scripts = @(
     "`r`n" * 3;
     $complete += $increment;
   }
-} *&gt;&amp;1 | Out-String &gt;&gt; "C:\Windows\Setup\Scripts\DefaultUser.log";
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; "C:\Windows\Setup\Scripts\DefaultUser.log";
 		</File>
 		<File path="C:\Windows\Setup\Scripts\FirstLogon.ps1">
 $scripts = @(
 	{
 		Set-ItemProperty -LiteralPath 'Registry::HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Type 'DWord' -Force -Value 0;
+	};
+	{
+		@(
+			Get-ChildItem -LiteralPath 'C:\' -Force;
+			Get-ChildItem -LiteralPath 'C:\Users' -Force;
+			Get-ChildItem -LiteralPath 'C:\Users\Default' -Force -Recurse -Depth 2;
+			Get-ChildItem -LiteralPath 'C:\Users\Public' -Force -Recurse -Depth 2;
+			Get-ChildItem -LiteralPath 'C:\ProgramData' -Force;
+		) | Where-Object -FilterScript {
+			$_.Attributes.HasFlag( [System.IO.FileAttributes]::ReparsePoint );
+		} | Remove-Item -Force -Recurse -Verbose;
 	};
 	{
 		Disable-ComputerRestore -Drive 'C:\';
@@ -910,7 +905,7 @@ $scripts = @(
     "`r`n" * 3;
     $complete += $increment;
   }
-} *&gt;&amp;1 | Out-String &gt;&gt; "C:\Windows\Setup\Scripts\FirstLogon.log";
+} *&gt;&amp;1 | Out-String -Stream &gt;&gt; "C:\Windows\Setup\Scripts\FirstLogon.log";
 		</File>
 	</Extensions>
 </unattend>
