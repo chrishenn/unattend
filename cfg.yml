@@ -23,6 +23,7 @@ windows:
     scoop_app:
       - googlechrome
       - dra
+      - driverstoreexplorer
       - eza
       - firacode-nf
       - gh
@@ -32,6 +33,7 @@ windows:
       - mpv
       - nano
       - obsidian
+      - snappy-driver-installer-origin
       - tldr
       - uutils-coreutils
       - vcredist2022

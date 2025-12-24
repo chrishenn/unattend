@@ -24,25 +24,28 @@ function acdc ($scheme, $cat, $id, $val) {
 }
 
 function network {
-    write-host -f c "network"
+    write-host -f c 'network'
 
     # set ethernet* networks to private
     Get-NetConnectionProfile -InterfaceAlias 'Ethernet*' | Set-NetConnectionProfile -NetworkCategory 'Private'
 
-    # set firewall permissive
+    # set firewall permissive (but don't disable; needed for ame blocking)
     Set-NetFirewallProfile -Profile Domain, Public, Private -DefaultInboundAction Allow
     Set-NetFirewallProfile -Profile Domain, Public, Private -DefaultOutboundAction Allow
 
     # smb
-    Set-SmbServerConfiguration -EnableMultiChannel $true -Confirm:$false
-    Set-SmbClientConfiguration -EnableMultiChannel $true -Confirm:$false
+    Set-SmbServerConfiguration -EnableMultiChannel $true -force
+    Set-SmbClientConfiguration -EnableMultiChannel $true -force
+
+    # disable work folders
+    disable-windowsoptionalfeature -online -featurename WorkFolders-Client
 
     # share the C:\ drive
-    New-SmbShare -ea 0 -Name c -Path "C:\" -FullAccess "Everyone"
+    New-SmbShare -ea 0 -Name c -Path "C:\" -FullAccess 'Everyone'
 }
 
 function power {
-    write-host -f c "power"
+    write-host -f c 'power'
 
     $out = powercfg /DuplicateScheme 'e9a42b02-d5df-448d-aa00-03f14749eb61'
     $pwrs = if ($out -match '\s([a-f0-9-]{36})\s') {
@@ -82,7 +85,7 @@ function power {
 }
 
 function tweak {
-    write-host -f c "tweak"
+    write-host -f c 'tweak'
 
     # hide from explorer
     $ex = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer'
@@ -214,20 +217,26 @@ function tweak {
     setprop $key 'UserDuckingPreference' 'DWORD' 3
 
     # dark theme
-    $key = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
     setprop $key 'AppsUseLightTheme' 'DWORD' 0
     setprop $key 'SystemUsesLightTheme' 'DWORD' 0
     setprop $key 'ColorPrevalence' 'DWORD' 0
     setprop $key 'EnableTransparency' 'DWORD' 1
-    # "automatically pick an accent color from my background"
+    # 'automatically pick an accent color from my background'
     setprop 'HKCU:\Control Panel\Desktop' 'AutoColorization' 'DWORD' 1
 
     # key repeat times. takes effect after logout
+    # to enable key debounce ('filter keys'), set flags=126, bouncetime in ms
     $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
-    setprop $key 'AutoRepeatDelay' 'DWORD' 150          # default: 1000
-    setprop $key 'AutoRepeatRate' 'DWORD' 6             # default: 500
-    setprop $key 'DelayBeforeAcceptance' 'DWORD' 0      # default: 1000
-    setprop $key 'Flags' 'DWORD' 27                     # default: 126
+    setprop $key 'AutoRepeatDelay' 'DWORD' 150          # default: 1000 [under 150 is said to cause problems]
+    setprop $key 'AutoRepeatRate' 'DWORD' 10            # default: 500  [repeat period (not rate) in ms]
+    setprop $key 'DelayBeforeAcceptance' 'DWORD' 0      # default: 1000 [setting to 150 or 200 may resolve problems]
+    setprop $key 'Flags' 'DWORD' 27                     # default: 126  [disables filter key icon, which causes problems]
+    setprop $key 'BounceTime' 'DWORD' 0                 # default: 126
+
+    $key = 'HKCU:\Control Panel\Keyboard'
+    setprop $key 'KeyboardDelay' 'DWORD' 0
+    setprop $key 'KeyboardSpeed' 'DWORD' 31
 
     # disable mouse accel
     $key = 'HKCU:\Control Panel\Mouse'
@@ -258,7 +267,7 @@ function tweak_graphics {
 }
 
 function security {
-    write-host -f c "security"
+    write-host -f c 'security'
 
     # script execution
     Set-ExecutionPolicy -force -scope LocalMachine -ExecutionPolicy bypass
@@ -273,8 +282,8 @@ function security {
     }
 
     # disable password expiry
-    $key = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordPolicy"
-    setprop $key "DisablePasswordExpiration" "DWORD" 1
+    $key = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\PasswordPolicy'
+    setprop $key 'DisablePasswordExpiration' 'DWORD' 1
 
     # UAC
     $key = 'HKLM:\Software\Microsoft\Windows\CurrentVersion\Policies\System'
@@ -321,7 +330,7 @@ function security {
 }
 
 function update {
-    write-host -f c "update"
+    write-host -f c 'update'
     if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
         Install-Module PSWindowsUpdate -force
     }
@@ -331,21 +340,21 @@ function update {
 }
 
 function activate {
-    write-host -f c "activate"
+    write-host -f c 'activate'
     try {
         iex "& {$(irm https://get.activated.win)} /HWID"
     } catch {
-        write-host -f r "SETUP: HWID activate failed"
+        write-host -f r 'SETUP: HWID activate failed'
     }
 }
 
 function setup {
-    write-host -f c "setup start"
+    write-host -f c 'setup start'
 
     security
     network_wait
     network
-    if ($cfg.containskey("shares")) {
+    if ($cfg.containskey('shares')) {
         mntshares $cfg.shares
     }
     pwr_unhide
@@ -364,7 +373,19 @@ function setup {
     }
     if (nvidia_gpu) {
         scoop install chris/nvgfx
+    if (nv_vc) {
+        scoop install chris/nvdriver
         scoop install chris/nvapp
+    }
+    if (intel_apu) {
+        scoop install chris/intelgfx
+    }
+    if (amd_apu) {
+        scoop install chris/amdgfx
+    }
+    if (intel_wifi) {
+        scoop install chris/intelwifi
+        scoop install chris/intelbt
     }
     if (intel_apu) {
         scoop install chris/intelgfx
@@ -381,7 +402,7 @@ function setup {
     update
     activate
 
-    write-host -f green "setup done"
+    write-host -f green 'setup done'
 }
 
 setup

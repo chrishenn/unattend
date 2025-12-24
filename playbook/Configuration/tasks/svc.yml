@@ -109,6 +109,7 @@ actions:
   - !service: { name: 'CscService', operation: change, startup: 4 }
   - !service: { name: 'wsearch', operation: change, startup: 4 }
   - !service: { name: 'workfolderssvc', operation: change, startup: 4 }
+  - !service: { name: 'WpnService', operation: change, startup: 4 }
   - !service: { name: 'BITS', operation: change, startup: 3 }
   - !service: { name: 'diagnosticshub.standardcollector.service', operation: change, startup: 4 }
   - !service: { name: 'XblAuthManager', operation: change, startup: 4 }

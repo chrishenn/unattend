@@ -76,9 +76,6 @@ $repo = "$HOME\unattend"
 ## todo
 
 - [ ] programmatically launch tasks after reboot
-    - [x] unattended: oobe
-    - [x] unattended: login
-    - [x] unattended: launch setup.ps1
     - [ ] enable autologin for next boot
     - [ ] store secrets in env
     - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
@@ -90,21 +87,22 @@ $repo = "$HOME\unattend"
         - [ ] dell xps laptop wifi
         - [ ] gigabyte, msi, asus mobo builtin ethernet
         - [ ] intel wifi
-- [ ] install common debloating functions as powershell manifests so that they can be re-run as needed
-    - edgeupdate, svc bloat like to re-install sometimes
-    - dpst likes to re-enable itself at random
+- [ ] drivers    
+    - [x] detect cpu, install matching chipset drivers
+    - [x] detect igpu, install matching driver
+    - [ ] motherboard-specific driver packages from vendor site
+        - handle hardware quirks (eg latest realtek 5gbe lan driver is terribly buggy)
+    - [ ] mount sdio driver pack over network
+        - ideally, this could replace other driver installers
 - [ ] software
-    - [x] see chrishenn/scoops
     - [ ] obsidian
         - [ ] vault sync
     - [ ] scoop pwsh module to take a scoops subtree from my cfg.yml and install packages from it
         - pkg install behavior switchable to: {best-effort, all-or-nothing}
-    - [ ] scoop pwsh module to run service de-bloat (in case they re-appear)
-    - [ ] chipset installers: amd, intel
-        - detect present cpu, install matching chipset
-        - <https://github.com/anxshi/various-infills>
-        - chipset scoop package for a given motherboard
-- [ ] set default apps
+    - [ ] scoop pwsh module to run svc, software de-bloat (in case they re-appear)
+        - edgeupdate, svc bloat like to re-install sometimes
+        - dpst likes to re-enable itself at random
+- [ ] default apps
     - [ ] browser: zen
     - [ ] media player: mpv
     - [ ] image viewer: imageglass
@@ -116,7 +114,7 @@ $repo = "$HOME\unattend"
     - [ ] set: file explorer sorting, columns
     - [ ] disable: file contents indexing
         - is this covered by disabling wsearch?
-    - [ ] default to "no": "allow windows to turn this device off to save power"
+    - [ ] default to "no" for all devices: "allow windows to turn this device off to save power"
 - [x] AME
     - [x] script: windows updates
     - [x] script: windows activate
@@ -134,7 +132,7 @@ $repo = "$HOME\unattend"
     - [x] remove: windows settings sync
     - [x] remove: random cruft folders from $HOME
 - [x] power
-    - [x] unhide power settings
+    - [x] unhide: all power settings
     - [x] set: "ultimate" power profile
     - [x] set: custom power and sleep button controls
     - [x] disable: screen off
@@ -170,7 +168,7 @@ ideal flow:
 - unattend
     - setup.ps1
     - enable auto login for next boot (how?)
-    - inject op/gh secrets into environment durably across reboot
+    - inject op/gh secrets into environment durably across reboot (disk, probably)
     - schedule setup2 to run on next login
     - reboot
 - run setup2.ps1 from scheduled task on login

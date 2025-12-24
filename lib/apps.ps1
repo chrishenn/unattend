@@ -11,22 +11,6 @@ function alienware {
     }
 }
 
-function edgeupdate {
-#    stop-process -name 'MicrosoftEdgeUpdate' -force -ea 0
-#    rm_force 'C:\Program Files (x86)\microsoft\edgeupdate'
-#    $key = 'HKLM:\SOFTWARE\Policies\Microsoft\edgeupdate'
-#    SetProp $key 'UpdateDefault' 'DWORD' 0
-
-    stop-process -force -ea 0 'MicrosoftEdgeUpdate'
-    stop-process -force -ea 0 'edgeupdate'
-    stop-process -force -ea 0 'edgeupdatem'
-
-    stop-service -force -ea 0 edgeupdate
-    remove-service -ea 0 edgeupdate
-    stop-service -force -ea 0 edgeupdatem
-    remove-service -ea 0 edgeupdatem
-}
-
 function killer {
     stop-service KAPSService -force -ea 0
     remove-service KAPSService -ea 0
@@ -71,23 +55,6 @@ function waves {
     }
 }
 
-# function chipset {
-    # todo: duplicate these to playbook svc.yml
-    # todo: these names are just a guess
-    # amd external events utilty
-    # svc_rm 'AmdAppCompatSvc'
-    # amd crash defender service
-    # svc_rm 'AMD Crash Defender Service'
-    # amd application compatibility service
-    # svc_rm 'amd application compatibility service'
-
-    # todo: duplicate the intel chipset svcs from playbook svc.yml
-    # todo: I don't remember the names
-    # playbook/Configuration/tasks/svc.yml
-    # svc_rm 'Intel(R) Platform License Manager Service'
-# }
-
 function gigabyte {
-    # gigabyte motherboard rootkit
     svc_rm 'gigabyteupdateservice'
 }

@@ -28,6 +28,7 @@ function _pkg {
 		echo "cleaning repo files from unpacked iso"
 		rm -rf "$dst"
 		rm -f "$iso_unpacked\autounattend.xml"
+		echo "cleaning packed iso"
 		rm -f "$iso_packed"
 	fi
 	mkdir -p "$dst"
