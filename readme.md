@@ -2,6 +2,11 @@
 
 Install Windows 11 and apply customizations automatically
 
+These three repos are meant to be used together:
+- https://github.com/chrishenn/unattend
+- https://github.com/chrishenn/chplib
+- https://github.com/chrishenn/scoops
+
 ---
 
 ## features
@@ -10,28 +15,21 @@ The goal is to have the windows installer do a fresh install of windows, and aut
 customizations, such that there is no manual installation or configuration required to go from blank disk to a working
 installation of windows 11.
 
-The "fully automatic" flow is a WIP - but with a single manual step, the scripts and configs included here
-can be used to provide a fresh windows 11 (client) installation with customizations, amelioration, and opinionated
-defaults.
-
-The resulting image will not have access to windows update, and is highly customized. It should never be used in places
-where stability is needed.
+This noninteractive flow is a WIP; right now, a single manual step is required.
 
 I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may not work well on other images.
 
 - Automate the windows 11 OOBE with an autounattend.xml file
     - https://schneegans.de/windows/unattend-generator/
-    - debloat
-- Automate application of configurations and tweaks via script launched by the unattend file
-    - apply custom settings
-    - apply tweaks + debloat
-    - apply chezmoi dotfiles
+- Automate windows tweaks, software installaion, software config
+    - apply settings, tweaks, debloat, and install software
+        - using https://github.com/chrishenn/chplib
+        - using https://github.com/chrishenn/scoops
+    - apply dotfiles  
 - Automate the application of modified "privacy+" ameliorations via "windows ameliorated"
     - https://amelabs.net/
     - https://github.com/Ameliorated-LLC/trusted-uninstaller-cli
     - https://github.com/Ameliorated-LLC/privacy_plus
-- Automate the installation, and customization, of some software via custom scoop manifests
-    - https://github.com/chrishenn/scoops
 
 ---
 
@@ -41,23 +39,21 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 # (bash) unpack your windows installer iso into ./iso
 ./iso.sh unpack <file.iso>
 
-# customize your {unattend, playbook, scripts} to your liking
+# customize your {unattend, scripts, playbook} to your liking
 
 # (bash) package a bootable iso image, including scripts and configs from the local repo
 ./iso.sh pkg
 
 # disable secure boot on the target system
+# remove drives that you do not want wiped, leaving just the target drive for the windows install
 # boot from iso
-# NOTE: this will wipe drive 0. I suggest removing all disks other than the one you intend to install windows onto
-# NOTE: windows installs the bootloader onto a random non-target-os drive. Recommended to remove other disks anyway
 
-# NOTE: REQUIRED TO LOG INTO THE GUI DESKTOP? AME FAILS TO RUN AS ADMIN WHEN CONNECT OVER SSH W/O LOGGING INTO GUI FIRST
-# NOTE: I've been running these over ssh after logging into the gui session. YMMV
-# NOTE: putting these mise/chezmoi steps into setup2.ps1 script causes mise to spazz out, so do them here
-$env:Path += ";$env:USERPROFILE\AppData\Local\mise\shims"
-mise use -g chezmoi op
+# manual step:
+# log into the windows gui after the machine reboots itself
+# connect over ssh (or locally) and run:
+
 $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
-& "$HOME\unattend\setup2.ps1" 'user' 'pass'
+"$HOME\unattend\setup2.ps1" 'chris' 'password'
 ```
 
 ---
@@ -67,8 +63,7 @@ $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
 debug env
 
 ```powershell
-$repo = "$HOME\unattend"
-(get-childitem "$repo/lib/*.ps1").foreach({. $_.FullName})
+. "$HOME\unattend\setup_init.ps1"
 ```
 
 ---
@@ -84,24 +79,15 @@ $repo = "$HOME\unattend"
 - [ ] network boot support
     - [ ] package the iso such that windows will use unattend.xml when pxe booting
     - [ ] package drivers into install environment + booted windows
-        - [ ] dell xps laptop wifi
-        - [ ] gigabyte, msi, asus mobo builtin ethernet
-        - [ ] intel wifi
 - [ ] drivers    
     - [x] detect cpu, install matching chipset drivers
     - [x] detect igpu, install matching driver
     - [ ] motherboard-specific driver packages from vendor site
-        - handle hardware quirks (eg latest realtek 5gbe lan driver is terribly buggy)
-    - [ ] mount sdio driver pack over network
-        - ideally, this could replace other driver installers
+        - [ ] handle hardware quirks (eg latest realtek 5gbe lan driver is terribly buggy)
+        - [ ] mount sdio driver pack over network
+            - ideally, this could replace other driver installers
 - [ ] software
-    - [ ] obsidian
-        - [ ] vault sync
-    - [ ] scoop pwsh module to take a scoops subtree from my cfg.yml and install packages from it
-        - pkg install behavior switchable to: {best-effort, all-or-nothing}
-    - [ ] scoop pwsh module to run svc, software de-bloat (in case they re-appear)
-        - edgeupdate, svc bloat like to re-install sometimes
-        - dpst likes to re-enable itself at random
+    - [ ] obsidian vault sync
 - [ ] default apps
     - [ ] browser: zen
     - [ ] media player: mpv
@@ -113,8 +99,7 @@ $repo = "$HOME\unattend"
 - [ ] tweak
     - [ ] set: file explorer sorting, columns
     - [ ] disable: file contents indexing
-        - is this covered by disabling wsearch?
-    - [ ] default to "no" for all devices: "allow windows to turn this device off to save power"
+    - [ ] disable: "allow windows to turn this device off to save power" for all devices
 - [x] AME
     - [x] script: windows updates
     - [x] script: windows activate
@@ -151,7 +136,6 @@ $repo = "$HOME\unattend"
     - [x] disable: require login after wake
     - [x] disable: mouse accel
     - [x] notification tray: hide bluetooth
-    - [x] notification tray: hide nvidia
     - [x] notification tray: hide securityhelath
     - [x] notification tray: always show all icons
 
@@ -172,10 +156,10 @@ ideal flow:
     - schedule setup2 to run on next login
     - reboot
 - run setup2.ps1 from scheduled task on login
-    - chezmoi
     - cleanup
         - file cruft
         - driver bloat
         - stored secrets
+    - chezmoi
     - run ame
     - reboot

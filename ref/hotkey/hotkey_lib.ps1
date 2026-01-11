@@ -4,10 +4,10 @@ function ah_deps {
         write-host -f r"ERROR: pwsh version too low: use pwsh >= 7"
         exit 1
     }
-    if (! (gcm_app scoop)){
+    if (! (inst_gcm scoop)){
         scoop_base
     }
-    if (! (scoop_app "autohotkey")) {
+    if (! (inst_scoop "autohotkey")) {
         scoop install autohotkey
     }
 
@@ -35,7 +35,7 @@ function ah_compile (
 ) {
     # compile scripts from the scripts folder
     [void](mkdir -force -ea 0 $compiled)
-    foreach ($path in $(Get-ChildItem -Path $scripts -Filter *.ahk -Name)) {
+    foreach ($path in $(gci -Path $scripts -Filter *.ahk -Name)) {
         write-host -f c "Compiling $path"
         $name = split-path $path -LeafBase
         start-process $ahk -a "/silent verbose /in $path /out $compiled\AH$name /base $base" -Wait
@@ -52,7 +52,7 @@ function ah_clean (
 function ah_kill {
     # kill autohotkey binaries in startup folder. Match using name like 'AH*.exe'
     $startup = [System.Environment]::GetFolderPath("CommonStartUp")
-    foreach ($exe in (Get-ChildItem $startup -Filter AH*.exe)) {
+    foreach ($exe in (gci $startup -Filter AH*.exe)) {
         $name = split-path $exe -Leafbase
         if (get-process -name $name -ea 0) {
             write-host -f c "killing: $name"
@@ -65,7 +65,7 @@ function ah_kill {
 function ah_start {
     # start autohotkey binaries in startup folder. Match using name like 'AH*.exe'
     $startup = [System.Environment]::GetFolderPath("CommonStartUp")
-    foreach ($path in (Get-ChildItem $startup -Filter AH*.exe).resolvedtarget) {
+    foreach ($path in (gci $startup -Filter AH*.exe).resolvedtarget) {
         write-host -f c "starting: $path"
         start-process "$path"
     }

@@ -55,7 +55,7 @@ function dism_offline {
         write-host "`n`n Not making clean tmp directories"
     }
 
-    $src_iso = Get-ChildItem *.iso -file | select -first 1
+    $src_iso = gci *.iso -file | select -first 1
     write-host "selected source iso $src_iso"
 
     if ($clean) {

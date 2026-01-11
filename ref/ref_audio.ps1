@@ -1,8 +1,6 @@
-# these are a WIP
-
 function audio_props {
     $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render'
-    $devs = get-childitem $key
+    $devs = gci $key
     foreach ($dev in $devs) {
         $devp = $dev.name.replace('HKEY_LOCAL_MACHINE', 'HKLM:')
         $devp = "$devp\properties"
@@ -29,7 +27,7 @@ function audio_props_3 {
     $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\MMDevices\Audio\Render'
     $keyn = '{9e8c7d26-7e4b-4c41-a1e3-25b844d44691},3'
 
-    $one = Get-ChildItem $key -Recurse
+    $one = gci $key -Recurse
     $two = $one | Where-Object {(Get-ItemProperty $_.PSPath -name $keyn)}
 
     $two = $one | Where-Object {(Get-ItemProperty $_.PSPath -Name '{1da5d803-d492-4edd-8c23-e0c0ffee7f0e},5' -ea 0)}
@@ -38,11 +36,11 @@ function audio_props_3 {
 
 function audio_system_sounds {
     # copied from schneegans unattend
-    $excludes = Get-ChildItem 'Registry::HKU\DefaultUser\AppEvents\EventLabels' |
+    $excludes = gci 'Registry::HKU\DefaultUser\AppEvents\EventLabels' |
         Where-Object {($_ | Get-ItemProperty).ExcludeFromCPL -eq 1;} |
         Select-Object -ExpandProperty 'PSChildName'
 
-    Get-ChildItem -Path 'Registry::HKU\DefaultUser\AppEvents\Schemes\Apps\*\*' |
+    gci -Path 'Registry::HKU\DefaultUser\AppEvents\Schemes\Apps\*\*' |
         Where-Object -Property 'PSChildName' -NotIn $excludes |
-        Get-ChildItem -Include '.Current' | Set-ItemProperty -Name '(Default)' -Value ''
+        gci -Include '.Current' | Set-ItemProperty -Name '(Default)' -Value ''
 }

@@ -1,3 +1,14 @@
+function exe_lnk (
+    [string][Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] $exe_path,
+    [string][Parameter(Mandatory = $true)][ValidateNotNullOrEmpty()] $lnk_path
+) {
+    write-host -f c "Creating shortcut: '$lnk_path' for exe: '$exe_path'"
+    $ws = New-Object -comObject WScript.Shell
+    $short = $ws.CreateShortcut($lnk_path)
+    $short.TargetPath = $exe_path
+    $short.Save()
+}
+
 function InstallPortable (
     [Parameter(Mandatory = $true)][string]  $src,
     [Parameter(Mandatory = $false)][string] $dst = "C:\portable",
@@ -8,7 +19,7 @@ function InstallPortable (
     cp -r -force $src $dst
 
     $src_name = split-path $src -Leaf
-    $app_exes = Get-ChildItem "$dst\$src_name" -Filter *.exe
+    $app_exes = gci "$dst\$src_name" -Filter *.exe
     if ($app_exes.count -eq 1) {
         $name_exe = split-path $app_exes -LeafBase
         write-host -f green "found exe: '$name_exe' for dir: '$src_name'"
@@ -27,7 +38,7 @@ function InstallPortable (
             return
         }
     }
-    foreach ($app_exe in Get-ChildItem -recurse "$dst\$src_name" -Filter *.exe) {
+    foreach ($app_exe in gci -recurse "$dst\$src_name" -Filter *.exe) {
         $name_exe = split-path $app_exe -LeafBase
 
         $srcn = $src_name.tolower()
@@ -48,7 +59,7 @@ function UninstallPortable (
     [Parameter(Mandatory = $false)][string] $lnkdir = [System.Environment]::GetFolderPath("CommonStartMenu") + "\Programs\portable"
 ) {
     rm -r -force $appdir
-    if ($lnk = get-childitem $lnkdir | where-object {$_.name -match (split-path $appdir -leafbase)}) {
+    if ($lnk = gci $lnkdir | where-object {$_.name -match (split-path $appdir -leafbase)}) {
         rm -force $lnk
         write-host -f green "uninstalled portable: '$appdir'"
         return

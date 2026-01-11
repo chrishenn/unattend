@@ -24,4 +24,3 @@ sync_init message="sync":
 [windows]
 ssh:
     pwsh -c "$env:HOST_SSH -At 'cd $env:HOST_REPO && pwsh'"
-

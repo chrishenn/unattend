@@ -27,6 +27,19 @@ function nvtelemetry {
     setprop 'HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\Startup' 'SendTelemetryData' 'DWORD' 0
 }
 
+function nvtray {
+    write-host 'NVIDIA TRAY: hide nv tray icon'
+    # https://www.elevenforum.com/t/fix-for-nvidia-taskbar-icon-missing.1853/
+    $key = 'HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm\NVTray'
+    setprop $key 'StartOnLogin' 'DWORD' 0
+    $key = 'HKLM:\SYSTEM\CurrentControlSet\Services\nvlddmkm\Global\NVTweak'
+    setprop $key 'DisableStoreNvCplNotifications' 'DWORD' 1
+
+    if (get-process explorer -ea 0) {
+        stop-process -name explorer -force
+    }
+}
+
 function nvcontainer {
     # required for nvcontrol panel, but safe to disable and use nvapp instead
     svc_disable 'NVDisplay.ContainerLocalSystem'

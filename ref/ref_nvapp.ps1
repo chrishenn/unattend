@@ -34,7 +34,7 @@ function nvapp_install (
     $pfx = "NVIDIA APP:"
     Write-host "$pfx {Force: $force, Edition: $edition}"
 
-    if ($gpu = (nv_wait)) {
+    if ($gpu = (hw_nvwait)) {
         write-host "$pfx Found gpu: $($gpu.name)"
     } elseif ($gpu_ignore) {
         write-host "$pfx No NVIDIA GPU found but force is true; proceeding to install nvidia app"
@@ -70,7 +70,7 @@ function nvapp_install (
 
     Write-host "$pfx Downloading nvidia app installer"
     $installer = "$HOME\nvidia_app.exe"
-    dl_retry $dl_url $installer
+    net_dlretry $dl_url $installer
 
     Write-host "$pfx Installing nvidia app"
     Start-Process $installer -a "-s -noreboot -noeula -nofinish -nosplash" -Wait

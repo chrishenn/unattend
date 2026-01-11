@@ -264,6 +264,6 @@ function home_reparsepoints {
     # My Documents -> C:\Users\chris\Documents
     # Start Menu -> C:\Users\chris\AppData\Roaming\Microsoft\Windows\Start Menu
 
-    $paths = Get-ChildItem $HOME -force
+    $paths = gci $HOME -force
     $rms = $paths | Where-Object {$_.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)}
 }

@@ -1,4 +1,4 @@
-$infs = Get-ChildItem "dir" -r -Filter "*inf"
+$infs = gci "dir" -r -Filter "*inf"
 foreach ($inf in $infs) {
     pnputil /add-driver $inf.fullname /install
 }

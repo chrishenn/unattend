@@ -1,6 +1,6 @@
 # disable bloat services
 
-(get-childitem "$PSScriptRoot/../lib/*.ps1").foreach({. $_.FullName})
+(gci "$PSScriptRoot/../lib/*.ps1").foreach({. $_.FullName})
 
 # starts with stem plus random chars: to search for full svc name and disable
 $stems = @(
@@ -13,5 +13,5 @@ $stems = @(
 )
 
 "disabling service names from stems"
-svcs_stems $stems
-svcs_disable $stems
+svc_stems $stems
+svc_disable $stems

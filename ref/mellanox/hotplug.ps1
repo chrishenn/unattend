@@ -20,3 +20,16 @@ $task_principle = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -Compatibility Win8
 
 Register-ScheduledTask -Action $action -Trigger $trigger -TaskName "DisableMlxHotplug" -Description "Disable Hotplug Descriptor for Mlx NIC" -Principal $task_principle -Settings $settings -Force
+
+function new_task {
+    # make scheduled task that runs script.bat on login
+    $act = New-ScheduledTaskAction -Execute "$bootscript_bat_tgt"
+    $trig = New-ScheduledTaskTrigger -AtLogOn
+    $prin = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel Highest
+    $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -Compatibility Win8
+    $tname = 'DisableMlxHotplug'
+    $desc = 'do thing'
+
+    Register-ScheduledTask -Action $act -Trigger $trig -TaskName $tname -Description $desc `
+        -Principal $prin -Settings $settings -Force
+}

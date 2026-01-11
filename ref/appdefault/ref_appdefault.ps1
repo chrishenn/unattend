@@ -146,8 +146,8 @@ begin {
     $ProtectedExtensions = ".html", ".htm", ".pdf"
 
     # Get the status of the User Choice Protection Driver service and scheduled task
-    $UserProtectionService = Get-Service -Name "UCPD" -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq "Running" }
-    $UserProtectionTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ErrorAction SilentlyContinue | Where-Object { $_.State -ne "Disabled" }
+    $UserProtectionService = Get-Service -Name "UCPD" -ea 0 | Where-Object { $_.Status -eq "Running" }
+    $UserProtectionTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ea 0 | Where-Object { $_.State -ne "Disabled" }
 
     if($Action -eq "Disable User Choice Protection Driver" -or $Action -eq "Enable User Choice Protection Driver" -and $Extensions){
         Write-Host -Object "[Error] Cannot add an association and '$Action' at the same time."
@@ -177,7 +177,7 @@ begin {
             }
 
             # Check if the extension is not found in the registry
-            if (!(Test-Path -Path "Registry::HKEY_CLASSES_ROOT\$ExtensionToAdd" -ErrorAction SilentlyContinue)) {
+            if (!(Test-Path -Path "Registry::HKEY_CLASSES_ROOT\$ExtensionToAdd" -ea 0)) {
                 Write-Host -Object "[Error] '$ExtensionToAdd' is invalid; it was not found in HKEY_CLASSES_ROOT."
                 $ExitCode = 1
                 return
@@ -399,24 +399,24 @@ begin {
             # If no user base key is specified, search in the default system-wide uninstall paths
             if (!$UserBaseKey) {
                 # Search for programs in 32-bit and 64-bit locations. Then add them to the list if they match the display name
-                $Result = Get-ChildItem -Path "Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
+                $Result = gci -Path "Registry::HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
                 if ($Result) { $InstallList.Add($Result) }
 
-                $Result = Get-ChildItem -Path "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
+                $Result = gci -Path "Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
                 if ($Result) { $InstallList.Add($Result) }
             }
             else {
                 # If a user base key is specified, search in the user-specified 64-bit and 32-bit paths.
-                $Result = Get-ChildItem -Path "$UserBaseKey\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
+                $Result = gci -Path "$UserBaseKey\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
                 if ($Result) { $InstallList.Add($Result) }
 
-                $Result = Get-ChildItem -Path "$UserBaseKey\Software\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
+                $Result = gci -Path "$UserBaseKey\Software\Microsoft\Windows\CurrentVersion\Uninstall\*" | Get-ItemProperty | Where-Object { $_.DisplayName -like "*$DisplayName*" }
                 if ($Result) { $InstallList.Add($Result) }
             }
 
             # If the UninstallString switch is specified, return only the uninstall strings; otherwise, return the full installation objects.
             if ($UninstallString) {
-                $InstallList | Select-Object -ExpandProperty UninstallString -ErrorAction SilentlyContinue
+                $InstallList | Select-Object -ExpandProperty UninstallString -ea 0
             }
             else {
                 $InstallList
@@ -487,9 +487,9 @@ begin {
                 exit 1
             }
         }
-        if (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue) {
+        if (Get-ItemProperty -Path $Path -Name $Name -ea 0) {
             # Update property and print out what it was changed from and changed to
-            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue).$Name
+            $CurrentValue = (Get-ItemProperty -Path $Path -Name $Name -ea 0).$Name
             try {
                 Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force -Confirm:$false -ErrorAction Stop | Out-Null
             }
@@ -498,7 +498,7 @@ begin {
                 Write-Host "[Error] $($_.Exception.Message)"
                 exit 1
             }
-            Write-Host "$Path\$Name changed from $CurrentValue to $((Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue).$Name)"
+            Write-Host "$Path\$Name changed from $CurrentValue to $((Get-ItemProperty -Path $Path -Name $Name -ea 0).$Name)"
         }
         else {
             # Create property with value
@@ -510,7 +510,7 @@ begin {
                 Write-Host "[Error] $($_.Exception.Message)"
                 exit 1
             }
-            Write-Host "Set $Path\$Name to $((Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue).$Name)"
+            Write-Host "Set $Path\$Name to $((Get-ItemProperty -Path $Path -Name $Name -ea 0).$Name)"
         }
     }
 
@@ -543,7 +543,7 @@ process {
         Write-Host -Object "Disabling the User Choice Protection Driver service."
 
         # Check if the registry path for the User Choice Protection Driver service exists
-        if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -ErrorAction SilentlyContinue) {
+        if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -ea 0) {
             Set-RegKey -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -Name "Start" -Value 4
         }
         else {
@@ -554,7 +554,7 @@ process {
         Write-Host -Object "Disabling the User Choice Protection scheduled task."
 
         # Get the scheduled task for the User Choice Protection Driver
-        $ScheduledTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ErrorAction SilentlyContinue
+        $ScheduledTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ea 0
         if ($ScheduledTask) {
             try {
                 # Disable the scheduled task
@@ -605,7 +605,7 @@ process {
         Write-Host -Object "Enabling the User Choice Protection Driver service."
 
         # Check if the registry path for the User Choice Protection Driver service exists
-        if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -ErrorAction SilentlyContinue) {
+        if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -ea 0) {
             Set-RegKey -Path "Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\UCPD" -Name "Start" -Value 1
         }
         else {
@@ -616,7 +616,7 @@ process {
         Write-Host -Object "Enabling the User Choice Protection scheduled task."
 
         # Get the scheduled task for the User Choice Protection Driver
-        $ScheduledTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ErrorAction SilentlyContinue
+        $ScheduledTask = Get-ScheduledTask -TaskName "UCPD velocity" -TaskPath "\Microsoft\Windows\AppxDeploymentClient\" -ea 0
         if ($ScheduledTask) {
             try {
                 # Enable the scheduled task
@@ -671,20 +671,20 @@ process {
     $ProfileWasLoaded = New-Object System.Collections.Generic.List[object]
 
     # Check if $ProgID is found in the registry
-    if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\Software\Classes\$ProgID" -ErrorAction SilentlyContinue) {
+    if (Test-Path -Path "Registry::HKEY_LOCAL_MACHINE\Software\Classes\$ProgID" -ea 0) {
         $ProgIDisValid = $True
     }
 
     # Loop through each profile on the machine
     ForEach ($UserProfile in $UserProfiles) {
         # Load User ntuser.dat if it's not already loaded
-        If (!(Test-Path -Path Registry::HKEY_USERS\$($UserProfile.SID) -ErrorAction SilentlyContinue)) {
+        If (!(Test-Path -Path Registry::HKEY_USERS\$($UserProfile.SID) -ea 0)) {
             Start-Process -FilePath "cmd.exe" -a "/C reg.exe LOAD HKU\$($UserProfile.SID) `"$($UserProfile.UserHive)`"" -Wait -WindowStyle Hidden
             $ProfileWasLoaded.Add($UserProfile)
         }
 
         # Check if $ProgID is found in the registry under the user profile
-        if (Test-Path -Path "Registry::HKEY_USERS\$($UserProfile.SID)\Software\Classes\$ProgID" -ErrorAction SilentlyContinue) {
+        if (Test-Path -Path "Registry::HKEY_USERS\$($UserProfile.SID)\Software\Classes\$ProgID" -ea 0) {
             $ProgIDisValid = $True
         }
 
@@ -703,7 +703,7 @@ process {
 
     # Check if the application is installed as an AppX package
     if (!$ProgramIsInstalled) {
-        $ProgramIsInstalled = Get-AppxPackage -AllUsers -ErrorAction SilentlyContinue | Where-Object { $_.Name -like "*$ApplicationName*" }
+        $ProgramIsInstalled = Get-AppxPackage -AllUsers -ea 0 | Where-Object { $_.Name -like "*$ApplicationName*" }
     }
 
     # If user profiles were loaded and the application is not installed, unload the profiles

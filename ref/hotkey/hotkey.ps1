@@ -1,4 +1,4 @@
-(get-childitem "$psscriptroot/../lib/*.ps1").foreach({. $_.FullName})
+. $psscriptroot\hotkey_lib.ps1
 
 function hotkey {
     ah_kill

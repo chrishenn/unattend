@@ -1,19 +1,3 @@
-function admin {
-    $id = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
-    return $id.IsInRole([Security.Principal.WindowsBuiltInRole]"Administrator")
-}
-
-function allow_scripts {
-    Set-ExecutionPolicy -force -scope LocalMachine -ExecutionPolicy Bypass
-    Set-ExecutionPolicy -force -scope CurrentUser -ExecutionPolicy Bypass
-}
-
-function uac_disable {
-    $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System'
-    SetProp $key 'ConsentPromptBehaviorAdmin' 'DWORD' 0
-    SetProp $key 'EnableLUA' 'DWORD' 0
-}
-
 function run_sys (
     [Parameter(Mandatory)][string] $Command,
     [Parameter(Mandatory)][AllowEmptyString()][string] $Arguments

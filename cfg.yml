@@ -39,6 +39,8 @@ windows:
       - vcredist2022
       - wiztree
       - windowsdesktop-runtime-lts
+      - 1password-cli
+      - chezmoi
       - chris/a4dj
       - chris/docker
       - chris/everything
@@ -58,4 +60,3 @@ windows:
     scoop_private:
       - chris/zenprof
       - chris/portable
-    scoop_shim:

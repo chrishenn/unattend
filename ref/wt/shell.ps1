@@ -11,9 +11,9 @@ function add_menu (
     ## Add items to right-click menu
     # Add simple submenu for shell item at root_path, with subcommands in cmd store at item_subcmd_ids
     $submenu_root = "$root_path\$item_id"
-    SetProp "$submenu_root" 'MUIVerb' "String" "$item_str"
-    SetProp "$submenu_root" 'Icon' "String" "$item_ico"
-    SetProp "$submenu_root" 'SubCommands' "String" "$item_subcmd_ids"
+    setprop "$submenu_root" 'MUIVerb' "String" "$item_str"
+    setprop "$submenu_root" 'Icon' "String" "$item_ico"
+    setprop "$submenu_root" 'SubCommands' "String" "$item_subcmd_ids"
 }
 
 function add_menus (
@@ -38,9 +38,9 @@ function add_menucmd (
     $item_path = "$root_path\$item_id"
     $item_cmd_path = "$item_path\command"
 
-    SetProp $item_path 'Icon' "String" "$item_ico"
-    SetProp $item_path 'MUIVerb' "String" "$item_str"
-    SetProp $item_cmd_path '(default)' "String" "$item_cmd"
+    setprop $item_path 'Icon' "String" "$item_ico"
+    setprop $item_path 'MUIVerb' "String" "$item_str"
+    setprop $item_cmd_path '(default)' "String" "$item_cmd"
 }
 
 function add_menucmds (

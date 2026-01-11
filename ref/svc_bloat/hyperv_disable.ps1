@@ -14,7 +14,7 @@ $hyperv_svc_names = @(
 )
 
 write-host "Stopping Hyper-V Services"
-svcs_stop $hyperv_svc_names
+svc_stop $hyperv_svc_names
 
 write-host "Disabling Hyper-V Services"
-svcs_disable $hyperv_svc_names
+svc_disable $hyperv_svc_names
