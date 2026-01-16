@@ -28,7 +28,6 @@ windows:
       - firacode-nf
       - gh
       - grep
-      - imageglass
       - mise
       - mpv
       - nano

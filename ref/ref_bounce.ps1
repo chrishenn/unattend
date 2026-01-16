@@ -1,13 +1,13 @@
-function shell_bounce {
+function bounce_shell {
     stop-process -name explorer -force
 }
 
-function audio_bounce {
+function bounce_audio {
     restart-service audiosrv
     restart-service AudioEndpointBuilder
 }
 
-function net_bounce {
+function bounce_net {
     ipconfig /release
     ipconfig /flushdns
     ipconfig /registerdns

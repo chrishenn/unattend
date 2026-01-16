@@ -35,7 +35,7 @@ function audio_props_3 {
 }
 
 function audio_system_sounds {
-    # copied from schneegans unattend
+    # copied from schneegans unattend. runs under the 'default user' pass
     $excludes = gci 'Registry::HKU\DefaultUser\AppEvents\EventLabels' |
         Where-Object {($_ | Get-ItemProperty).ExcludeFromCPL -eq 1;} |
         Select-Object -ExpandProperty 'PSChildName'

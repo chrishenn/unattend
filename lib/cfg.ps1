@@ -1,6 +1,7 @@
 function cfg_yml (
     [parameter(Mandatory = $true)][ValidateNotNullOrEmpty()][string] $file
 ) {
+    write-host -f c 'cfg yml'
     # read a scoop packages manifest from yaml and return the relevant section for our platform
     if (-not (get-module -listavailable powershell-yaml)) {
         install-module powershell-yaml -force -SkipPublisherCheck
@@ -10,6 +11,7 @@ function cfg_yml (
 }
 
 function cfg_mntshare {
+    write-host -f c 'cfg mntshare'
     if ($cfg.containskey('shares')) {
         net_mntshare $cfg.shares
     }
@@ -18,6 +20,7 @@ function cfg_mntshare {
 function cfg_scoop (
     [Hashtable] $cfg
 ) {
+    write-host -f c 'cfg scoop'
     if ($cfg.containskey("scoop_base")) {
         scoop_base $cfg.scoop_base
     } else {
@@ -39,6 +42,7 @@ function cfg_scoop (
 function cfg_scoop_prv (
     [Hashtable] $cfg
 ) {
+    write-host -f c 'cfg scoop private'
     if (-not $cfg.containskey("scoop_private")) {
         write-host -f y "WARN (scoop_private): no key scoop_private in hashtable param 'cfg'"
         return

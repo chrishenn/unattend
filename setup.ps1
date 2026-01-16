@@ -1,5 +1,5 @@
 function tweak_security {
-    write-host -f c 'security'
+    write-host -f c 'tweak security'
     sec_uac
     sec_pwsh
     sec_defender
@@ -10,7 +10,7 @@ function tweak_security {
 }
 
 function tweak_network {
-    write-host -f c 'network'
+    write-host -f c 'tweak network'
 
     Get-NetConnectionProfile -InterfaceAlias 'Ethernet*' | Set-NetConnectionProfile -NetworkCategory 'Private'
     New-SmbShare -ea 0 -Name c -Path 'C:\' -FullAccess 'Everyone'
@@ -31,7 +31,7 @@ function acdc (
 }
 
 function tweak_power {
-    write-host -f c 'power'
+    write-host -f c 'tweak power'
 
     pwr_unhide
     pwr_throttling
@@ -58,6 +58,7 @@ function tweak_power {
 }
 
 function drivers {
+    write-host -f c 'drivers'
     # todo: detect motherboard and install driver package; possibly use snappy sdio
     # todo: handle driver quirks
 
@@ -66,11 +67,7 @@ function drivers {
         scoop install chris/amdchipset
     }
     if ($cput -eq [Cpu]::intel) {
-        scoop install chris/intelserialio
-    }
-    if (hw_nvgpu) {
-        scoop install chris/nvgfx
-        scoop install chris/nvapp
+        scoop install chris/intelhid
     }
     if (hw_intelapu) {
         scoop install chris/intelgfx
@@ -81,6 +78,10 @@ function drivers {
     if (hw_intelwifi) {
         scoop install chris/intelwifi
         scoop install chris/intelbt
+    }
+    if (hw_nvgpu) {
+        scoop install chris/nvgfx
+        scoop install chris/nvapp
     }
 }
 
@@ -96,6 +97,7 @@ function setup {
 
     cfg_mntshare
     cfg_scoop $cfg
+    sec_pwsh
 
     drivers
     update_all

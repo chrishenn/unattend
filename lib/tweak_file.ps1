@@ -10,7 +10,7 @@ function file_extensions {
 }
 
 function file_reparsepoints {
-    # copied from unattend
+    # copied from schneegans unattend
     $paths = @(
         gci 'C:\' -force
         gci 'C:\Users' -force

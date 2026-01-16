@@ -3,11 +3,10 @@
 Install Windows 11 and apply customizations automatically
 
 These three repos are meant to be used together:
+
 - https://github.com/chrishenn/unattend
 - https://github.com/chrishenn/chplib
 - https://github.com/chrishenn/scoops
-
----
 
 ## features
 
@@ -25,13 +24,11 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
     - apply settings, tweaks, debloat, and install software
         - using https://github.com/chrishenn/chplib
         - using https://github.com/chrishenn/scoops
-    - apply dotfiles  
+    - apply dotfiles
 - Automate the application of modified "privacy+" ameliorations via "windows ameliorated"
     - https://amelabs.net/
     - https://github.com/Ameliorated-LLC/trusted-uninstaller-cli
     - https://github.com/Ameliorated-LLC/privacy_plus
-
----
 
 ## usage
 
@@ -53,10 +50,8 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 # connect over ssh (or locally) and run:
 
 $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
-"$HOME\unattend\setup2.ps1" 'chris' 'password'
+& "$HOME\unattend\setup2.ps1" 'chris' 'password'
 ```
-
----
 
 ## dev
 
@@ -66,38 +61,27 @@ debug env
 . "$HOME\unattend\setup_init.ps1"
 ```
 
----
+NOTE: if you replace line separators 'CRLF' with 'LF' in autounattend.xml, it will not run
 
 ## todo
 
-- [ ] programmatically launch tasks after reboot
-    - [ ] enable autologin for next boot
-    - [ ] store secrets in env
-    - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
-- [ ] automate golden image creation
-    - [ ] boot a new base image and apply our mods as default user, then bake into golden image
-- [ ] network boot support
-    - [ ] package the iso such that windows will use unattend.xml when pxe booting
-    - [ ] package drivers into install environment + booted windows
-- [ ] drivers    
+- find a new image viewer program, as imageglass requires webview2 and I'd rather not deal with it
+- setup2.ps1: may rely on pwsh 7, in which case I should add a check
+- setup2.ps1: pass 'server' choice to chezmoi init
+- [ ] drivers
     - [x] detect cpu, install matching chipset drivers
     - [x] detect igpu, install matching driver
+    - [ ] mount sdio driver pack over network
     - [ ] motherboard-specific driver packages from vendor site
         - [ ] handle hardware quirks (eg latest realtek 5gbe lan driver is terribly buggy)
-        - [ ] mount sdio driver pack over network
-            - ideally, this could replace other driver installers
 - [ ] software
     - [ ] obsidian vault sync
-- [ ] default apps
-    - [ ] browser: zen
-    - [ ] media player: mpv
-    - [ ] image viewer: imageglass
-- [ ] audio
+- [ ] tweak
+    - [ ] set: default browser
+    - [ ] set: file explorer sorting, columns
     - [x] disable: audio ducking
     - [ ] disable: audio enhancements
-    - [ ] disable: exclusive mode
-- [ ] tweak
-    - [ ] set: file explorer sorting, columns
+    - [ ] disable: audio exclusive mode
     - [ ] disable: file contents indexing
     - [ ] disable: "allow windows to turn this device off to save power" for all devices
 - [x] AME
@@ -138,6 +122,18 @@ debug env
     - [x] notification tray: hide bluetooth
     - [x] notification tray: hide securityhelath
     - [x] notification tray: always show all icons
+
+stretching:
+
+- [ ] programmatically launch tasks after reboot
+    - [ ] enable autologin for next boot
+    - [ ] store secrets in env
+    - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
+- [ ] automate golden image creation
+    - [ ] boot a new base image and apply our mods as default user, then bake into golden image
+- [ ] network boot support
+    - [ ] package the iso such that windows will use unattend.xml when pxe booting
+    - [ ] package drivers into install environment + booted windows
 
 out of scope, but would be nice:
 
