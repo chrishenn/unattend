@@ -5,9 +5,9 @@ function bloat_alienware {
     file_rmf 'C:\programdata\alienware'
     file_rmf 'C:\program files\alienware'
 
-    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | where-object {$_.name -like "awcc_im_driver*"}
+    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | ? {$_.name -like "awcc_im_driver*"}
     foreach ($dir in $dirs) {
-        gci $dir -file | where-object {$_.name -match ".exe"} | remove-item -force -ea 0
+        gci $dir.fullname -file | ? {$_.name -match ".exe"} | rm -force -ea 0
     }
 }
 
@@ -23,7 +23,7 @@ function bloat_edgeupdate {
     svc_rm edgeupdatem
 
     $names = '(MicrosoftEdgeUpdateTaskMachineCore|MicrosoftEdgeUpdateTaskMachineUA)'
-    $tasks = get-scheduledtask | where-object {$_.taskname -match $names}
+    $tasks = get-scheduledtask | ? {$_.taskname -match $names}
     foreach ($task in $tasks) {
         [void](Disable-ScheduledTask $task)
     }
@@ -35,25 +35,24 @@ function bloat_edgeupdate {
 }
 
 function bloat_killer {
-    stop-service KAPSService -force -ea 0
-    remove-service KAPSService -ea 0
+    svc_rm KAPSService
 
     # killer startup task
-    $tasks = get-scheduledtask | where-object {$_.taskname -match 'killer'}
+    $tasks = get-scheduledtask | ? {$_.taskname -match 'killer'}
     foreach ($task in $tasks) {
         unregister-scheduledtask $task.taskname -Confirm:$false
     }
 
     # killer control center
-    $pkgs = get-appxPackage -AllUsers | where-object {$_.name -match 'killer'}
+    $pkgs = get-appxPackage -AllUsers | ? {$_.name -match 'killer'}
     foreach ($pkg in $pkgs) {
         remove-appxpackage $pkg -allusers
     }
 
     # killer services. drivers should be .inf files, but .exe's are not needed
-    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | where-object {$_.name -like "killer*"}
+    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | ? {$_.name -like "killer*"}
     foreach ($dir in $dirs) {
-        gci $dir -file | where-object {$_.name -match ".exe"} | remove-item -force -ea 0
+        gci $dir.fullname -file | ? {$_.name -match ".exe"} | rm -force -ea 0
     }
 
     # prog files
@@ -71,10 +70,10 @@ function bloat_waves {
     rm -r -force -ea 0 "C:\ProgramData\Waves"
 
     # this may be the only necessary step
-    $path = "C:\Windows\System32\DriverStore\FileRepository"
-    $wavesdirs = gci $path -Directory | where-object {$_.name -like "*waves*"}
-    foreach ($drdir in $wavesdirs) {
-        pnputil /delete-driver $drdir /uninstall
+    $path = 'C:\Windows\System32\DriverStore\FileRepository'
+    $dirs = gci $path -Directory | ? {$_.name -like "*waves*"}
+    foreach ($dir in $dirs) {
+        pnputil /delete-driver $dir.fullname /uninstall
     }
 }
 

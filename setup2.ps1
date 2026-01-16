@@ -24,7 +24,7 @@ function setup2 {
     autologin $user $pass
     pwr_dpst
     cfg_scoop_prv $cfg
-    chezmoi init chrishenn --apply --force
+    chezmoi init chrishenn --apply --force --promptDefaults
     & "$psscriptroot\amecli\TrustedUninstaller.CLI.exe" "$psscriptroot\playbook" ''
 }
 

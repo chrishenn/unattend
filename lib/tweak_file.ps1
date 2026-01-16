@@ -18,8 +18,10 @@ function file_reparsepoints {
         gci 'C:\Users\Public' -r -force -Depth 2
         gci 'C:\ProgramData' -force
     )
-    $rms = $paths | Where-Object {$_.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)}
-    rm -r -force $rms
+    $rms = $paths | ? {$_.Attributes.HasFlag([System.IO.FileAttributes]::ReparsePoint)}
+    if ($rms) {
+        rm -r -force $rms
+    }
 }
 
 function file_clutter {

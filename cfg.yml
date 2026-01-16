@@ -21,40 +21,41 @@ windows:
       - nerd-fonts
       - chris https://github.com/chrishenn/scoops
     scoop_app:
-      - googlechrome
+      - 1password-cli
+      - chezmoi
       - dra
       - driverstoreexplorer
       - eza
       - firacode-nf
       - gh
+      - googlechrome
       - grep
       - mise
       - mpv
       - nano
       - obsidian
+      - qview
       - snappy-driver-installer-origin
       - tldr
       - uutils-coreutils
       - vcredist2022
-      - wiztree
       - windowsdesktop-runtime-lts
-      - 1password-cli
-      - chezmoi
+      - wiztree
       - chris/a4dj
+      - chris/amesettings
       - chris/docker
       - chris/everything
+      - chris/fpilot
       - chris/hotkey
       - chris/lnks
+      - chris/openshell
       - chris/opgui
       - chris/powertoys
+      - chris/ssh
       - chris/steinberg
       - chris/uavolt
-      - chris/wt
-      - chris/ssh
       - chris/vscode
-      - chris/fpilot
-      - chris/amesettings
-      - chris/openshell
+      - chris/wt
       - chris/epatcher
     scoop_private:
       - chris/zenprof
