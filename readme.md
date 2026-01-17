@@ -2,35 +2,39 @@
 
 Install Windows 11 and apply customizations automatically
 
-These three repos are meant to be used together:
+These repos are meant to be used together:
 
 - https://github.com/chrishenn/unattend
 - https://github.com/chrishenn/chplib
 - https://github.com/chrishenn/scoops
+- https://github.com/chrishenn/drivers
 
 ## features
 
-The goal is to have the windows installer do a fresh install of windows, and automatically kick off a full set of
-customizations, such that there is no manual installation or configuration required to go from blank disk to a working
-installation of windows 11.
+The goal is to have the following be carried out with no interaction when installing windows 11:
 
-This noninteractive flow is a WIP; right now, a single manual step is required.
+- an autounattend.xml installs the base windows os
+- on first login, autounattend.xml launches customization scripts
+- after one or two reboots and subsequent scripts, I have a usable installation of windows 11
 
-I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may not work well on other images.
+## usage
+
+This noninteractive flow is a WIP; right now, manual steps are required.
 
 - Automate the windows 11 OOBE with an autounattend.xml file
     - https://schneegans.de/windows/unattend-generator/
-- Automate windows tweaks, software installaion, software config
-    - apply settings, tweaks, debloat, and install software
-        - using https://github.com/chrishenn/chplib
-        - using https://github.com/chrishenn/scoops
-    - apply dotfiles
-- Automate the application of modified "privacy+" ameliorations via "windows ameliorated"
+- Apply settings, tweaks, debloat, dotfiles, and install software, drivers
+    - ./unattend.ps1
+    - using https://github.com/chrishenn/chplib
+    - using https://github.com/chrishenn/scoops
+    - using https://github.com/chrishenn/drivers
+- Apply modified "privacy+" ameliorations via "windows ameliorated"
+    - ./playbook
     - https://amelabs.net/
     - https://github.com/Ameliorated-LLC/trusted-uninstaller-cli
     - https://github.com/Ameliorated-LLC/privacy_plus
 
-## usage
+I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may not work well on other images.
 
 ```powershell
 # (bash) unpack your windows installer iso into ./iso
@@ -42,35 +46,49 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 ./iso.sh pkg
 
 # disable secure boot on the target system
-# remove drives that you do not want wiped, leaving just the target drive for the windows install
+# remove drives that you do not want wiped
 # boot from iso
+# the unattend.xml should launch this on first login:
+# & "C:\users\chris\unattend\setup.ps1"
 
 # manual step:
 # log into the windows gui after the machine reboots itself
 # connect over ssh (or locally) and run:
 
 $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
-& "$HOME\unattend\setup2.ps1" 'username' 'password'
+. C:\users\chris\unattend\unattend.ps1; unattend 2
+
+# manual step: drivers
+# see ref/sdio for issues. interactive shell only
+scoop install snappy-driver-installer-origin
+sdio -script:$glob.sdio
+
+# interactive shell only
+scoop install chris/Z790_gigabyte_udac
+scoop install chris/X870E_gigabyte_master
+scoop install chris/XPS9320
 ```
 
 ## dev
 
+NOTE: if you replace line separators 'CRLF' with 'LF' in autounattend.xml, it will not run !!
+
 debug env
 
 ```powershell
-. "$HOME\unattend\setup_init.ps1"
+$repo = 'C:\users\chris\unattend'
+$lib = "$repo\lib"
+. C:\users\chris\unattend\unattend.ps1
+. ${function:glob_src} $lib
+$opt = glob_opt $repo $lib
 ```
-
-NOTE: if you replace line separators 'CRLF' with 'LF' in autounattend.xml, it will not run
 
 ## todo
 
 - [ ] drivers
     - [x] detect cpu, install matching chipset drivers
     - [x] detect igpu, install matching driver
-    - [ ] mount sdio driver pack over network
-    - [ ] motherboard-specific driver packages from vendor site
-        - [ ] handle hardware quirks (eg latest realtek 5gbe lan driver is terribly buggy)
+    - [ ] install: drivers
 - [ ] software
     - [ ] obsidian vault sync
 - [ ] tweak
@@ -82,44 +100,6 @@ NOTE: if you replace line separators 'CRLF' with 'LF' in autounattend.xml, it wi
     - [ ] disable: audio exclusive mode
     - [ ] disable: file contents indexing
     - [ ] disable: "allow windows to turn this device off to save power" for all devices
-- [x] AME
-    - [x] script: windows updates
-    - [x] script: windows activate
-    - [x] script: security deps
-    - [x] script: system deps
-    - [x] script: launch AME cli
-- [x] driver bloat
-    - [x] remove: waves maxxaudio
-    - [x] remove: killer wifi suite
-    - [x] remove: edge update service
-    - [x] remove: logitech lamparray service
-    - [x] remove: alienware control center
-- [x] windows bloat
-    - [x] remove: mobsync / microsoft sync center / offline files
-    - [x] remove: windows settings sync
-    - [x] remove: random cruft folders from $HOME
-- [x] power
-    - [x] unhide: all power settings
-    - [x] set: "ultimate" power profile
-    - [x] set: custom power and sleep button controls
-    - [x] disable: screen off
-    - [x] disable: usb power save
-    - [x] disable: dpst
-- [x] custom tweaks
-    - [x] quick access: unpin default folders from explorer
-    - [x] quick access: pin my custom "home" folders
-    - [x] set: key hold time, repeat interval
-    - [x] set: desktop graphics settings
-- [x] settings tweaks
-    - [x] disable: autoplay
-    - [x] disable: "when I snap a thing show what I can snap next to it"
-    - [x] disable: "show window handle at top screen when dragging"
-    - [x] disable: auto lock
-    - [x] disable: require login after wake
-    - [x] disable: mouse accel
-    - [x] notification tray: hide bluetooth
-    - [x] notification tray: hide securityhelath
-    - [x] notification tray: always show all icons
 
 stretching:
 
@@ -144,12 +124,13 @@ out of scope, but would be nice:
 ideal flow:
 
 - unattend
-    - setup.ps1
+    - `unattend.ps1 1`
+        - install drivers
     - enable auto login for next boot (how?)
     - inject op/gh secrets into environment durably across reboot (disk, probably)
     - schedule setup2 to run on next login
     - reboot
-- run setup2.ps1 from scheduled task on login
+- run `unattend.ps1 2` from scheduled task on login
     - cleanup
         - file cruft
         - driver bloat

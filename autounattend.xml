@@ -501,7 +501,7 @@ Set-ItemProperty -LiteralPath $key -Name 'ConfigureStartPins' -Value $json -Type
 &lt;/LayoutModificationTemplate&gt;
 		</File>
 		<File path="C:\Windows\Setup\Scripts\unattend-01.ps1">
-&amp; C:\users\chris\unattend\setup.ps1
+. C:\users\chris\unattend\unattend.ps1; unattend 1
 		</File>
 		<File path="C:\Windows\Setup\Scripts\Specialize.ps1">
 $scripts = @(

@@ -1,0 +1,17 @@
+drpdir \\192.168.1.142\h\windows\drivers\sdio\drivers
+indexdir \\192.168.1.142\h\windows\drivers\sdio\indexes\SDIO
+logdir \\192.168.1.142\h\windows\drivers\sdio\logs
+
+logging on
+debug on
+verbose 384
+enableinstall on
+keeptempfiles off
+
+init
+checkupdates
+get indexes
+get driverpacks all
+select missing
+install
+end

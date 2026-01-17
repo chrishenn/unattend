@@ -54,7 +54,7 @@ function file_misc {
     file_rmf "$env:appdata\microsoft\windows\start menu\programs\maintenance"
     file_rmf "$env:userprofile\appdata\roaming\microsoft\windows\start menu\programs\maintenance"
 
-    # not sure why this was there
+    # not sure why this was there - possibly due to canceling AME while it's mid-run
     file_rmf 'C:\programdata\Ame'
     file_rmf 'C:\Windows\SystemApps\Microsoft.MicrosoftEdgeDevToolsClient_*'
 }

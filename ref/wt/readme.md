@@ -42,8 +42,8 @@ Copy-paste breaks on multiline paste. Fix by commenting these in settings.json:
 
 ```json
 {
- "command": "paste",
- "keys": "ctrl+v"
+    "command": "paste",
+    "keys": "ctrl+v"
 }
 ```
 
@@ -53,9 +53,9 @@ Add to settings.json under "profile" section or whatever
 
 ```json
 {
-  "commandline": "C:\\Program Files\\Git\\bin\\bash.exe",
-  "guid": "{b0f5ce57-a6d6-46d8-bc20-38b0b769789a}",
-  "hidden": false,
-  "name": "Git Bash"
+    "commandline": "C:\\Program Files\\Git\\bin\\bash.exe",
+    "guid": "{b0f5ce57-a6d6-46d8-bc20-38b0b769789a}",
+    "hidden": false,
+    "name": "Git Bash"
 }
 ```

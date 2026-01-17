@@ -1,3 +1,5 @@
+$dstore = 'C:\windows\system32\driverstore\filerepository'
+
 function bloat_alienware {
     stop-process -name 'awccinstallationmanager' -force -ea 0
     stop-process -name 'aw.notificationutility' -force -ea 0
@@ -5,7 +7,7 @@ function bloat_alienware {
     file_rmf 'C:\programdata\alienware'
     file_rmf 'C:\program files\alienware'
 
-    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | ? {$_.name -like "awcc_im_driver*"}
+    $dirs = gci -directory $dstore | ? {$_.name -like "awcc_im_driver*"}
     foreach ($dir in $dirs) {
         gci $dir.fullname -file | ? {$_.name -match ".exe"} | rm -force -ea 0
     }
@@ -50,7 +52,7 @@ function bloat_killer {
     }
 
     # killer services. drivers should be .inf files, but .exe's are not needed
-    $dirs = gci -directory 'C:\windows\system32\driverstore\filerepository' | ? {$_.name -like "killer*"}
+    $dirs = gci -directory $dstore | ? {$_.name -like "killer*"}
     foreach ($dir in $dirs) {
         gci $dir.fullname -file | ? {$_.name -match ".exe"} | rm -force -ea 0
     }
@@ -64,14 +66,12 @@ function bloat_waves {
     svc_rm WavesSysSvc
     svc_rm WavesAudioService
 
-    rm -r -force -ea 0 "C:\Program Files\Waves"
-    rm -r -force -ea 0 "C:\Program Files (x86)\Waves"
-    rm -r -force -ea 0 "C:\ProgramData\Waves Audio"
-    rm -r -force -ea 0 "C:\ProgramData\Waves"
+    file_rmf "C:\Program Files\Waves"
+    file_rmf "C:\Program Files (x86)\Waves"
+    file_rmf "C:\ProgramData\Waves Audio"
+    file_rmf "C:\ProgramData\Waves"
 
-    # this may be the only necessary step
-    $path = 'C:\Windows\System32\DriverStore\FileRepository'
-    $dirs = gci $path -Directory | ? {$_.name -like "*waves*"}
+    $dirs = gci $dstore -directory | ? {$_.name -match 'waves'}
     foreach ($dir in $dirs) {
         pnputil /delete-driver $dir.fullname /uninstall
     }
@@ -79,4 +79,13 @@ function bloat_waves {
 
 function bloat_gigabyte {
     svc_rm gigabyteupdateservice
+}
+
+function bloat_realtek {
+    $drvs = get-windowsdriver -online
+    $netdrvs = $drvs | ? {$_.classname -eq 'net' -and $_.providername -eq 'realtek'}
+
+    foreach ($dir in $netdrvs) {
+        pnputil /delete-driver $dir.OriginalFileName /uninstall
+    }
 }

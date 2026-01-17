@@ -15,7 +15,7 @@ function hideprop (
 }
 
 function tweak_explorer {
-    write-host -f c "tweak explorer"
+    write-host -f c 'tweak explorer'
 
     # hide from file explorer
     $ex = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer'
@@ -98,7 +98,7 @@ function tweak_explorer {
 }
 
 function tweak_graphics {
-    write-host -f c "tweak graphics"
+    write-host -f c 'tweak graphics'
     $key = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\VisualEffects'
     rprop "$key\AnimateMinMax" 'DefaultValue' 'DWORD' 0
     rprop "$key\ComboBoxAnimation" 'DefaultValue' 'DWORD' 0
@@ -120,7 +120,7 @@ function tweak_graphics {
 }
 
 function tweak_misc {
-    write-host -f c "tweak misc"
+    write-host -f c 'tweak misc'
 
     # notifications
     $stem = '\SOFTWARE\Policies\Microsoft\Windows\Explorer'
