@@ -46,6 +46,7 @@ function glob_opt ([string] $repo, [string] $lib, [string] $log = '') {
 
     write-host ''
     write-host "global options: $($opt | format-table | out-string)"
+    write-host ''
     return $opt
 }
 
