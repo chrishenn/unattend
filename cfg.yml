@@ -52,7 +52,7 @@ windows:
       - chris/hotkey
       - chris/lnks
       - chris/openshell
-      - chris/opgui
+      - chris/opgui_np
       - chris/powertoys
       - chris/ssh
       - chris/steinberg
