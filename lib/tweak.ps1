@@ -179,10 +179,17 @@ function tweak_misc {
 
     # key repeat times. takes effect after logout
     $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
-    rprop $key 'AutoRepeatDelay' 'DWORD' 150          # default: 1000
-    rprop $key 'AutoRepeatRate' 'DWORD' 6             # default: 500
-    rprop $key 'DelayBeforeAcceptance' 'DWORD' 0      # default: 1000
-    rprop $key 'Flags' 'DWORD' 27                     # default: 126
+#    rprop $key 'AutoRepeatDelay' 'String' 150          # default: 1000
+#    rprop $key 'AutoRepeatRate' 'String' 6             # default: 500
+#    rprop $key 'BounceTime' 'String' 0                  # default: 0
+#    rprop $key 'DelayBeforeAcceptance' 'String' 0      # default: 1000
+#    rprop $key 'Flags' 'String' 27                     # default: 126
+
+    rprop $key 'AutoRepeatDelay' 'String' 1000          # default: 1000
+    rprop $key 'AutoRepeatRate' 'String' 500            # default: 500
+    rprop $key 'BounceTime' 'String' 0                  # default: 0
+    rprop $key 'DelayBeforeAcceptance' 'String' 1000    # default: 1000
+    rprop $key 'Flags' 'String' 126                     # default: 126
 
     # disable mouse accel
     $key = 'HKCU:\Control Panel\Mouse'
