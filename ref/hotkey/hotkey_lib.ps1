@@ -78,4 +78,3 @@ function ah_copy (
     $startup = [System.Environment]::GetFolderPath("CommonStartUp")
     cp -r -force $compiled\*.exe $startup
 }
-

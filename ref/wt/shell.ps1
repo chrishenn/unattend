@@ -67,5 +67,3 @@ function rm_menucmds (
     rm -r -force -ea 0 "$shell_dir\$menustr"
     rm -r -force -ea 0 "$shell_back\$menustr"
 }
-
-

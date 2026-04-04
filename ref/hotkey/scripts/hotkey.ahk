@@ -12,4 +12,3 @@
 #u::run "appwiz.cpl"
 #w::run "hdwiz.cpl"
 #s::run "mmsys.cpl"
-
