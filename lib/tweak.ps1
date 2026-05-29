@@ -181,7 +181,7 @@ function tweak_misc {
     $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
 #    rprop $key 'AutoRepeatDelay' 'String' 150          # default: 1000
 #    rprop $key 'AutoRepeatRate' 'String' 6             # default: 500
-#    rprop $key 'BounceTime' 'String' 0                  # default: 0
+#    rprop $key 'BounceTime' 'String' 0                 # default: 0
 #    rprop $key 'DelayBeforeAcceptance' 'String' 0      # default: 1000
 #    rprop $key 'Flags' 'String' 27                     # default: 126
 
@@ -197,3 +197,29 @@ function tweak_misc {
     rprop $key 'MouseThreshold1' 'String' 0
     rprop $key 'MouseThreshold2' 'String' 0
 }
+
+#function tweak_search {
+    # looks like you may have to totally delete the search binary
+
+    # Windows Registry Editor Version 5.00
+    #
+    # [HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\FeatureManagement\Overrides\8\1694661260]
+    # "EnabledState"=dword:00000001
+    # "EnabledStateOptions"=dword:00000000
+    # "Variant"=dword:00000000
+    # "VariantPayload"=dword:00000000
+    # "VariantPayloadKind"=dword:00000000
+
+    # vivetool.exe /disable /id:37926450
+
+    # could rm this under AME
+    # takeown /s LAPTOP-KTECDKUA /u Barkermush /f "C:\Windows\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\SearchHost.exe"
+    # icacls "C:\Windows\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\SearchHost.exe" /inheritance:r /grant:r Barkermush:F
+    # taskkill /im SearchHost.exe /f
+    # ren "C:\Windows\SystemApps\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\SearchHost.exe" searchhostSAVE.exe
+#}
+
+#function tweak_svc_rm {
+    # search for a svc with name like "windows push notifications user service" and do svc_rm on it
+    # tried it - ill lyk how it went
+#}
