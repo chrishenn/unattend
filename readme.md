@@ -147,3 +147,10 @@ ideal flow:
     - chezmoi
     - run ame
     - reboot
+
+note:
+
+I have a git scoop that mirrors the scoop/main git.json, but kills running instances before uninstall. Alas, this 
+presents an ordering issue with my current arrangement of scoop-bootstrapping functions - may be worth a revisit in the 
+future, and would probably look like 1) bootstrap scoop and base packages with main/git 2) uninstall main/git 3) install
+chris/git.
