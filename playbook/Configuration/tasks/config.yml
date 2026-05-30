@@ -7,11 +7,15 @@ actions:
   - !service: { name: 'WpnService', operation: stop, ignoreErrors: true }
   - !service: { name: 'WpnUserService*', operation: stop, ignoreErrors: true }
   - !taskKill: { name: 'explorer' }
+  
   - !file: { path: "%SYSTEMDRIVE%\\Users\\Public\\Desktop\\Microsoft Edge.lnk" }
   - !file: { path: "%ALLUSERSPROFILE%\\Microsoft\\Windows\\Start Menu\\Programs\\Accessories\\Windows Media Player.lnk" }
   - !file: { path: "%WINDIR%\\HelpPane.exe" }
   - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.Core_cw5n1h2txyewy\\SystemSettingsExtensions.dll" }
   - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SystemSettingsExtensions.dll" }
+  - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe" }
+  - !file: { path: "%WINDIR%\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\FESearchHost.exe" }
+
   - !run: { exeDir: true, exe: 'CLEANUP.bat', weight: 30 }
   - !run: { exe: 'explorer.exe', wait: false, runas: currentUser }
 
