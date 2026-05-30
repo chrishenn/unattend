@@ -14,13 +14,9 @@ function bloat_alienware {
 }
 
 function bloat_edgeupdate {
-    # does this break webview2?
-
-    stop-process -force -ea 0 -name 'MicrosoftEdgeUpdate'
-
+    stop-process -force -ea 0 -name MicrosoftEdgeUpdate
     stop-process -force -ea 0 -name edgeupdate
     svc_rm edgeupdate
-
     stop-process -force -ea 0 -name edgeupdatem
     svc_rm edgeupdatem
 
@@ -30,10 +26,9 @@ function bloat_edgeupdate {
         [void](Disable-ScheduledTask $task)
     }
 
-    # does this break webview2?
-    # file_rmf 'C:\Program Files (x86)\microsoft\edgeupdate'
-    # $key = 'HKLM:\SOFTWARE\Policies\Microsoft\edgeupdate'
-    # rprop $key 'UpdateDefault' 'DWORD' 0
+    file_rmf 'C:\Program Files (x86)\microsoft\edgeupdate'
+    $key = 'HKLM:\SOFTWARE\Policies\Microsoft\edgeupdate'
+    rprop $key 'UpdateDefault' 'DWORD' 0
 }
 
 function bloat_killer {
@@ -89,3 +84,34 @@ function bloat_realtek {
         pnputil /delete-driver $dir.OriginalFileName /uninstall
     }
 }
+
+# function bloat_winpush {
+#     search for a svc with name like "windows push notifications user service" and do svc_rm on it
+#     tried deleting it - windows makes a new one on reboot
+#     the common hacky workaround is just to run a script to search and kill it on boot, using task scheduler
+#     https://github.com/faishalkc/WpnService-Watcher
+# }
+#
+# function sched_nvidia {
+#     # todo: this goes in the nv_app scoop
+#     $task = get-scheduledtask | ? {$_.TaskName -match "Nvidia"}
+#     if ($task) {
+#         unregister-ScheduledTask $task.taskname -Confirm:$false -ea 0
+#     }
+# }
+#
+# function sched_amdinstall {
+#     # todo: this goes in the amdchipset scoop, probably
+#     $task = get-scheduledtask | ? {$_.TaskName -match "AMD Install Manager"}
+#     if ($task) {
+#         unregister-ScheduledTask $task.taskname -Confirm:$false -ea 0
+#     }
+# }
+#
+# function bloat_winxbox {
+#     # todo: is there an api in AME to remove scheduled tasks? if so, put this there
+#     $task = get-scheduledtask | ? {$_.TaskName -match "XBLGame"}
+#     if ($task) {
+#         unregister-ScheduledTask $task.taskname -Confirm:$false -ea 0
+#     }
+# }

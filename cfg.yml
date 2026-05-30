@@ -42,6 +42,7 @@ windows:
       - tldr
       - uutils-coreutils
       - vcredist2022
+      - which
       - windowsdesktop-runtime-lts
       - wiztree
       - chris/a4dj
