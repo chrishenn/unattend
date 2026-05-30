@@ -83,6 +83,15 @@ $lib = "$repo\lib"
 $opt = glob_opt $repo $lib
 ```
 
+```powershell
+$url = "https://github.com/Ameliorated-LLC/trusted-uninstaller-cli/releases/download/0.8.4/CLI-Standalone.zip"
+curl -Lo amecli.zip $url
+unzip amecli.zip -d "$env:REPO\amecli"
+rm amecli.zip
+
+& "$env:REPO\amecli\TrustedUninstaller.CLI.exe" "$env:REPO\playbook" ''
+```
+
 ## todo
 
 - [ ] drivers

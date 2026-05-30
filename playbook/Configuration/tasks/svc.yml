@@ -18,6 +18,7 @@ actions:
   - !taskKill: { name: 'searchhost' }
   - !taskKill: { name: 'searchindexer' }
 
+  - !service: { name: 'searchhost', operation: delete, deleteUsingRegistry: true }
   - !service: { name: 'iphlpsvc', operation: stop }
   - !service: { name: 'Winmgmt', operation: stop }
   - !service: { name: 'ClipSVC', operation: stop }
@@ -118,7 +119,12 @@ actions:
   - !service: { name: 'XboxGipSvc', operation: change, startup: 4 }
 
   - !run: { exeDir: true, exe: 'SERVICE.bat', weight: 20 }
-  - !registryValue: { path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules', value: 'Block Services', type: REG_SZ, data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\System32\amehost.exe|Name=Block Services|Desc=Block Certain Services Outbound UDP/TCP Traffic|' }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block Services',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\System32\amehost.exe|Name=Block Services|Desc=Block Certain Services Outbound UDP/TCP Traffic|',
+    }
   - !registryValue: {
       path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
       value: 'Block SearchApp',
@@ -143,4 +149,9 @@ actions:
       type: REG_SZ,
       data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\ImmersiveControlPanel\SystemSettings.exe|Name=Block SystemSettings|Desc=Block Windows Settings Outbound UDP/TCP Traffic|',
     }
-  - !registryValue: { path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules', value: 'Block Explorer', type: REG_SZ, data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\explorer.exe|Name=Block Explorer|Desc=Block Explorer Outbound UDP/TCP Traffic|' }
+  - !registryValue: {
+      path: 'HKLM\SYSTEM\ControlSet001\Services\SharedAccess\Parameters\FirewallPolicy\FirewallRules',
+      value: 'Block Explorer',
+      type: REG_SZ,
+      data: 'v2.32|Action=Block|Active=TRUE|Dir=Out|RA42=IntErnet|RA62=IntErnet|App=%SystemRoot%\explorer.exe|Name=Block Explorer|Desc=Block Explorer Outbound UDP/TCP Traffic|',
+    }

@@ -221,5 +221,7 @@ function tweak_misc {
 
 #function tweak_svc_rm {
     # search for a svc with name like "windows push notifications user service" and do svc_rm on it
-    # tried it - ill lyk how it went
+    # tried deleting it - windows makes a new one on reboot
+    # the common hacky workaround is just to run a script to search and kill it on boot, using task scheduler
+    # https://github.com/faishalkc/WpnService-Watcher
 #}
