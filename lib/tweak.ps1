@@ -169,13 +169,18 @@ function tweak_misc {
     rprop $key 'UserDuckingPreference' 'DWORD' 3
 
     # dark theme
-    $key = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize'
     rprop $key 'AppsUseLightTheme' 'DWORD' 0
     rprop $key 'SystemUsesLightTheme' 'DWORD' 0
     rprop $key 'ColorPrevalence' 'DWORD' 0
     rprop $key 'EnableTransparency' 'DWORD' 1
     # "automatically pick an accent color from my background"
     rprop 'HKCU:\Control Panel\Desktop' 'AutoColorization' 'DWORD' 1
+
+    # startup registry entries - don't wait to launch on boot
+    $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize'
+    rprop $key 'WaitForIdleState' 'DWORD' 0
+    rprop $key 'StartupDelayInMSec' 'DWORD' 1
 
     # key repeat times. takes effect after logout
     $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'

@@ -3,6 +3,8 @@ semi: false
 singleQuote: true
 tabWidth: 4
 printWidth: 120
+useTabs: false
+bracketSpacing: false
 
 overrides:
 - files: "*.yml"
