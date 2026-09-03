@@ -15,6 +15,5 @@ prettier = "latest"
 REPO = "{{ config_root | absolute }}"
 REPO_NAME = "{{ config_root | basename }}"
 
-HK_LIBGIT2 = 0
 HOST_SSH = "ssh chris@192.168.1.32"
 HOST_REPO = "/users/chris/unattend"
