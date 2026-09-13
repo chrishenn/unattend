@@ -182,6 +182,7 @@ function unattend2 ([hashtable] $opt) {
 
     startup_rm @('SecurityHealth', 'Volt Driver Control Panel Autostart', 'waves')
     tray_hide 'universalaudio'
+    svc_user_rm
 
     pwr_dpst
     cfg_autologin $opt.cfgfile
