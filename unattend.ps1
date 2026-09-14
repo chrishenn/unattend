@@ -152,6 +152,7 @@ function unattend1 ([hashtable] $opt) {
     tweak_power
     tweak_explorer
     tweak_graphics
+    tweak_controlpanel
     tweak_misc
 
     cfg_mntshare $opt.cfg

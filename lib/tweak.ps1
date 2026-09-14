@@ -95,6 +95,10 @@ function tweak_explorer {
 
     # icon cache size
     rprop $ex 'MaxCachedIcons' 'String' 8192
+
+    # disable new search box
+    $key = 'HKCU:\Software\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs'
+    rprop $key '(default)' 'String' '{64bc32b5-4eec-4de7-972d-bd8bd0324537}'
 }
 
 function tweak_graphics {
@@ -119,8 +123,45 @@ function tweak_graphics {
     rprop "$key\TooltipAnimation" 'DefaultValue' 'DWORD' 0
 }
 
+function tweak_controlpanel {
+    write-host -f c 'tweak control panel settings'
+
+    # key repeat times. takes effect after logout
+    $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
+    rprop $key 'AutoRepeatDelay' 'String' 150          # default: 1000
+    rprop $key 'AutoRepeatRate' 'String' 6             # default: 500
+    rprop $key 'BounceTime' 'String' 0                 # default: 0
+    rprop $key 'DelayBeforeAcceptance' 'String' 0      # default: 1000
+    rprop $key 'Flags' 'String' 27                     # default: 126
+
+    # disable mouse accel
+    $key = 'HKCU:\Control Panel\Mouse'
+    rprop $key 'MouseSpeed' 'String' 0
+    rprop $key 'MouseThreshold1' 'String' 0
+    rprop $key 'MouseThreshold2' 'String' 0
+
+    # "automatically pick an accent color from my background"
+    rprop 'HKCU:\Control Panel\Desktop' 'AutoColorization' 'DWORD' 1
+
+    # turn off bluetooth icon in system tray
+    $key = 'HKCU:\Control Panel\Bluetooth'
+    rprop $key 'Notification Area Icon' 'DWORD' 0
+
+    # reduce right-click menu open delay (default: 400)
+    $key = 'HKCU:\Control Panel\Desktop'
+    rprop $key 'MenuShowDelay' 'DWORD' 200
+}
+
 function tweak_misc {
     write-host -f c 'tweak misc'
+
+    # disable network throttling for SMB
+    $key = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile'
+    rprop $key 'NetworkThrottlingIndex' 'DWORD' 0xffffffff
+
+    # default: 5000
+    $key = 'HKLM:\SYSTEM\CurrentControlSet\Control'
+    rprop $key 'WaitToKillServiceTimeout' 'String' '2000'
 
     # notifications
     $stem = '\SOFTWARE\Policies\Microsoft\Windows\Explorer'
@@ -131,15 +172,7 @@ function tweak_misc {
     $key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender Security Center\Notifications'
     rprop $key 'DisableNotifications' 'DWORD' 1
 
-    # ??
-    $key = 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Multimedia\SystemProfile'
-    rprop $key 'NetworkThrottlingIndex' 'DWORD' 0xffffffff
-    $key = 'HKLM:\SYSTEM\CurrentControlSet\Control'
-    rprop $key 'WaitToKillServiceTimeout' 'String' '2000'
-
-    # ??
-    $key = 'HKCU:\Software\Classes\CLSID\{1d64637d-31e9-4b06-9124-e83fb178ac6e}\TreatAs'
-    rprop $key '(default)' 'String' '{64bc32b5-4eec-4de7-972d-bd8bd0324537}'
+    # restore old right-click menu
     $key = 'HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\InprocServer32'
     rprop $key '(default)' 'String' ''
 
@@ -148,8 +181,6 @@ function tweak_misc {
     rprop $key 'HideSystray' 'DWORD' 1
     $key = 'HKCU:\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\TrayNotify'
     rprop $key 'SystemTrayChevronVisibility' 'DWORD' 0
-    $key = 'HKCU:\Control Panel\Bluetooth'
-    rprop $key 'Notification Area Icon' 'DWORD' 0
 
     # offline files, settings sync
     $key = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\NetCache'
@@ -174,25 +205,9 @@ function tweak_misc {
     rprop $key 'SystemUsesLightTheme' 'DWORD' 0
     rprop $key 'ColorPrevalence' 'DWORD' 0
     rprop $key 'EnableTransparency' 'DWORD' 1
-    # "automatically pick an accent color from my background"
-    rprop 'HKCU:\Control Panel\Desktop' 'AutoColorization' 'DWORD' 1
 
     # startup registry entries - don't wait to launch on boot
     $key = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Serialize'
     rprop $key 'WaitForIdleState' 'DWORD' 0
     rprop $key 'StartupDelayInMSec' 'DWORD' 1
-
-    # key repeat times. takes effect after logout
-    $key = 'HKCU:\Control Panel\Accessibility\Keyboard Response'
-    rprop $key 'AutoRepeatDelay' 'String' 150          # default: 1000
-    rprop $key 'AutoRepeatRate' 'String' 6             # default: 500
-    rprop $key 'BounceTime' 'String' 0                 # default: 0
-    rprop $key 'DelayBeforeAcceptance' 'String' 0      # default: 1000
-    rprop $key 'Flags' 'String' 27                     # default: 126
-
-    # disable mouse accel
-    $key = 'HKCU:\Control Panel\Mouse'
-    rprop $key 'MouseSpeed' 'String' 0
-    rprop $key 'MouseThreshold1' 'String' 0
-    rprop $key 'MouseThreshold2' 'String' 0
 }
