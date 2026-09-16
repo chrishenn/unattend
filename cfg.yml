@@ -25,7 +25,6 @@ windows:
       - chris https://github.com/chrishenn/scoops
     scoop_app:
       - 1password-cli
-      - chezmoi
       - dra
       - driverstoreexplorer
       - eza
