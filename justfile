@@ -6,7 +6,7 @@ s: sync
 [unix]
 sync message="sync":
     git commit -am "{{ message }}" && git pull && git push
-    
+
 [unix]
 syncr message="sync":
     git commit -a -m "{{ message }}" || true && git pull && git push
