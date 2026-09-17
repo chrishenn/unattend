@@ -87,8 +87,8 @@ install the drivers
 
 - install.wim might be install.esd
 - mount wim on linux
-    - https://manpages.ubuntu.com/manpages/xenial/man1/wimlib-imagex-mount.1.html
-    - https://unix.stackexchange.com/questions/283446/how-to-create-bootable-windows-8-iso-image-in-linux
-    - https://adminthing.blogspot.com/2020/06/modify-windows-ISO.html
+  - https://manpages.ubuntu.com/manpages/xenial/man1/wimlib-imagex-mount.1.html
+  - https://unix.stackexchange.com/questions/283446/how-to-create-bootable-windows-8-iso-image-in-linux
+  - https://adminthing.blogspot.com/2020/06/modify-windows-ISO.html
 
 ---

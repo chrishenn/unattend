@@ -76,28 +76,28 @@ wimunmount wim --commit
 ## refs
 
 - debloaters
-    - https://github.com/Mr1Stark/win11debloat
+  - https://github.com/Mr1Stark/win11debloat
 - tiny11, tiny11 core
-    - powershell script that totally uninstalls winsxs from win11 iso (non-active win image)
-    - https://github.com/ntdevlabs/tiny11builder
+  - powershell script that totally uninstalls winsxs from win11 iso (non-active win image)
+  - https://github.com/ntdevlabs/tiny11builder
 - oscdimg
-    - the windows-native tool to pack windows iso's.
-    - There's a choco package so that you don't have to install the windows ADK
-    - `choco install windows-adk-oscdimg`
+  - the windows-native tool to pack windows iso's.
+  - There's a choco package so that you don't have to install the windows ADK
+  - `choco install windows-adk-oscdimg`
 - tutorial for using built in windows tools
-    - https://www.tenforums.com/tutorials/133098-dism-create-bootable-iso-multiple-windows-10-images.html
+  - https://www.tenforums.com/tutorials/133098-dism-create-bootable-iso-multiple-windows-10-images.html
 - imgburn
-    - was mentioned to pack iso's but I haven't done it
+  - was mentioned to pack iso's but I haven't done it
 - NTLite
-    - mentioned in the win11 AME docs
+  - mentioned in the win11 AME docs
 - WinReducer
-    - https://www.winreducer.net/wros.html
+  - https://www.winreducer.net/wros.html
 - MSMG Toolkit
-    - mainly just a wrapper for some of the powershell commands
-    - https://msmgtoolkit.in/
+  - mainly just a wrapper for some of the powershell commands
+  - https://msmgtoolkit.in/
 - UI
-    - https://github.com/Open-Shell/Open-Shell-Menu
-    - https://github.com/valinet/ExplorerPatcher
-    - note: DO NOT USE startallback (does not seem to work on newer builds)
-        - https://github.com/Aetherinox/startallback-utility
-    - https://github.com/eythaann/Seelen-UI/
+  - https://github.com/Open-Shell/Open-Shell-Menu
+  - https://github.com/valinet/ExplorerPatcher
+  - note: DO NOT USE startallback (does not seem to work on newer builds)
+    - https://github.com/Aetherinox/startallback-utility
+  - https://github.com/eythaann/Seelen-UI/

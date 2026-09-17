@@ -22,17 +22,17 @@ The goal is to have the following be carried out with no interaction when instal
 This noninteractive flow is a WIP; right now, manual steps are required.
 
 - Automate the windows 11 OOBE with an autounattend.xml file
-    - https://schneegans.de/windows/unattend-generator/
+  - https://schneegans.de/windows/unattend-generator/
 - Apply settings, tweaks, debloat, dotfiles, and install software, drivers
-    - ./unattend.ps1
-    - using https://github.com/chrishenn/chplib
-    - using https://github.com/chrishenn/scoops
-    - using https://github.com/chrishenn/drivers
+  - ./unattend.ps1
+  - using https://github.com/chrishenn/chplib
+  - using https://github.com/chrishenn/scoops
+  - using https://github.com/chrishenn/drivers
 - Apply modified "privacy+" ameliorations via "windows ameliorated"
-    - ./playbook
-    - https://amelabs.net/
-    - https://github.com/Ameliorated-LLC/trusted-uninstaller-cli
-    - https://github.com/Ameliorated-LLC/privacy_plus
+  - ./playbook
+  - https://amelabs.net/
+  - https://github.com/Ameliorated-LLC/trusted-uninstaller-cli
+  - https://github.com/Ameliorated-LLC/privacy_plus
 
 I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may not work well on other images.
 
@@ -96,70 +96,70 @@ rm amecli.zip
 ## todo
 
 - [ ] drivers
-    - [x] detect cpu, install chipset drivers
-    - [x] detect igpu, install driver
-    - [x] detect discrete nvidia gpu, install driver
-    - [ ] detect discrete amd gpu, install driver
+  - [x] detect cpu, install chipset drivers
+  - [x] detect igpu, install driver
+  - [x] detect discrete nvidia gpu, install driver
+  - [ ] detect discrete amd gpu, install driver
 - [ ] software
-    - [ ] obsidian vault sync
+  - [ ] obsidian vault sync
 - [ ] tweak
-    - [ ] set: default browser
-    - [ ] set: default image viewer
-    - [ ] set: file explorer sorting, columns
-    - [x] disable: audio ducking
-    - [ ] disable: audio enhancements
-    - [ ] disable: audio exclusive mode
-    - [ ] disable: file contents indexing
-    - [ ] disable: "allow windows to turn this device off to save power" for all devices
+  - [ ] set: default browser
+  - [ ] set: default image viewer
+  - [ ] set: file explorer sorting, columns
+  - [x] disable: audio ducking
+  - [ ] disable: audio enhancements
+  - [ ] disable: audio exclusive mode
+  - [ ] disable: file contents indexing
+  - [ ] disable: "allow windows to turn this device off to save power" for all devices
 
 stretching:
 
 - [ ] programmatically launch tasks after reboot
-    - [ ] enable autologin for next boot
-    - [ ] store secrets on disk
-    - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
+  - [ ] enable autologin for next boot
+  - [ ] store secrets on disk
+  - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
 - [ ] automate golden image creation
-    - [ ] boot a new base image and apply our mods as default user, then bake into golden image
+  - [ ] boot a new base image and apply our mods as default user, then bake into golden image
 - [ ] network boot support
-    - [ ] package the iso such that windows will use unattend.xml when pxe booting
-    - [ ] package drivers into install environment + booted windows
+  - [ ] package the iso such that windows will use unattend.xml when pxe booting
+  - [ ] package drivers into install environment + booted windows
 - [ ] drivers
-    - This is deceptively tricky. Even the third-party SDIO driver store cannot account for the full hideousness of the 
+  - This is deceptively tricky. Even the third-party SDIO driver store cannot account for the full hideousness of the
     windows driver supply chain (eg realtek network driver on amd 5950x machine causes severe network stutter). The best
     method we currently have is to invoke driver installer packages distributed by a motherboard manufacturer; I've partially
     automated this with scoops like chris/XPS9320 etc, but this still leaves much to be desired (to name just a few:
-    manual mobo detection; manual driver package hosting; writing an install script for each manufacturer's package format; 
+    manual mobo detection; manual driver package hosting; writing an install script for each manufacturer's package format;
     the insanely slow performance of these installers; unknown parallelizability of running these installers).
 
 out of scope, but would be nice:
 
 - [ ] modify epatcher src
-    - [ ] add: scripted application of settings
-    - [ ] add: silent uninstall
+  - [ ] add: scripted application of settings
+  - [ ] add: silent uninstall
 - [ ] modify powertoys src
-    - [ ] add: scripted application of settings
+  - [ ] add: scripted application of settings
 
 ideal flow:
 
 - unattend
-    - `unattend.ps1 1`
-        - install drivers
-    - enable auto login for next boot (how?)
-    - inject op/gh secrets into environment durably across reboot (disk, probably)
-    - schedule setup2 to run on next login
-    - reboot
+  - `unattend.ps1 1`
+    - install drivers
+  - enable auto login for next boot (how?)
+  - inject op/gh secrets into environment durably across reboot (disk, probably)
+  - schedule setup2 to run on next login
+  - reboot
 - run `unattend.ps1 2` from scheduled task on login
-    - cleanup
-        - file cruft
-        - driver bloat
-        - stored secrets
-    - chezmoi
-    - run ame
-    - reboot
+  - cleanup
+    - file cruft
+    - driver bloat
+    - stored secrets
+  - chezmoi
+  - run ame
+  - reboot
 
 note:
 
-I have a git scoop that mirrors the scoop/main git.json, but kills running instances before uninstall. Alas, this 
-presents an ordering issue with my current arrangement of scoop-bootstrapping functions - may be worth a revisit in the 
+I have a git scoop that mirrors the scoop/main git.json, but kills running instances before uninstall. Alas, this
+presents an ordering issue with my current arrangement of scoop-bootstrapping functions - may be worth a revisit in the
 future, and would probably look like 1) bootstrap scoop and base packages with main/git 2) uninstall main/git 3) install
 chris/git.

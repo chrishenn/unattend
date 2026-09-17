@@ -24,7 +24,7 @@ function _pkg {
 	declare clean=${4:-true}
 
 	dst="$iso_unpacked/sources/\$OEM\$/\$1/Users/Default/unattend/"
-	if $clean; then
+	if "$clean"; then
 		echo "cleaning repo files from unpacked iso"
 		rm -rf "$dst"
 		rm -f "$iso_unpacked\autounattend.xml"

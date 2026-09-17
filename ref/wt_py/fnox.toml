@@ -4,5 +4,5 @@ vault = "homelab"
 account = "my.1password.com"
 
 [secrets]
-SSH_USER= { provider = "onepass", value = "op://homelab/chris/username" }
-SSH_PASS= { provider = "onepass", value = "op://homelab/chris/password" }
+SSH_USER = { provider = "onepass", value = "op://homelab/chris/username" }
+SSH_PASS = { provider = "onepass", value = "op://homelab/chris/password" }

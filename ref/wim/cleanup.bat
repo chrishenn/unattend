@@ -5,7 +5,7 @@ Echo Off & cls
 Set ph=%~dp0
 Cd %ph%
 
-::  Apply the current user’s settings to the Default user:
+::  Apply the current user's settings to the Default user:
 Copy /Y unattend.xml  %SystemRoot%\System32\Sysprep
 
 :: Delete existing shadow copies and restore points:

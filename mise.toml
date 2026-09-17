@@ -2,13 +2,12 @@
 env_shell_expand = true
 
 [tools]
-gitleaks = "latest"
 hk = "latest"
 pkl = "latest"
 shellcheck = "latest"
 shfmt = "latest"
-trufflehog = "latest"
-prettier = "latest"
+oxfmt = "latest"
+shellharden = "latest"
 
 [env]
 REPO = "{{ config_root | absolute }}"
@@ -16,3 +15,7 @@ REPO_NAME = "{{ config_root | basename }}"
 
 HOST_SSH = "ssh chris@192.168.1.32"
 HOST_REPO = "/users/chris/unattend"
+
+[tasks.fix]
+alias = 'f'
+run = 'hk fix --all'

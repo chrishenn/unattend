@@ -10,7 +10,7 @@ cm:
 
 [unix]
 sync message="sync":
-    git commit -a -m "{{message}}" || true && git pull && git push
+    git commit -a -m "{{ message }}" || true && git pull && git push
     $HOST_SSH -At "cd ${HOST_REPO} && git pull"
 
 [unix]
@@ -18,7 +18,7 @@ s: sync
 
 [unix]
 sync_init message="sync":
-    git commit -a -m "{{message}}" || true && git pull && git push
+    git commit -a -m "{{ message }}" || true && git pull && git push
     $HOST_SSH -At "rm -rf /users/chris/unattend && cd $HOST_REPO/.. && git clone https://github.com/chrishenn/unattend.git"
 
 [windows]
