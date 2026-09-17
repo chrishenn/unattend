@@ -189,9 +189,14 @@ function unattend2 ([hashtable] $opt) {
     cfg_autologin $opt.cfgfile
     cfg_scoop_prv $opt.cfg $opt.cfgfile
 
+    # synced clock required for op to work
+    time_sync_enable
+    time_cf
+    time_tz_auto
     time_sync
+
     $env:GITHUB_TOKEN = (op read "op://homelab/github/credential")
-    mise bootstrap --from git@github.com:chrishenn/bootstrap.git --from-dir ~/Projects/bootstrap --skip-dirty --update -y
+    mise bootstrap --from $opt.cfg.bootstrap.repo --from-dir $opt.cfg.bootstrap.dir --skip-dirty --update -y
     & $opt.amecli $opt.playbook [string]$opt.ameargs
 
     write-host -f green 'main 2 done'

@@ -54,7 +54,6 @@ I've been testing with windows 11 client (LTSC 2024 25H2) and these scripts may 
 # manual step:
 # log into the windows gui after the machine reboots itself
 # connect over ssh (or locally) and run:
-
 $env:OP_SERVICE_ACCOUNT_TOKEN = '<token>'
 . C:\users\chris\unattend\unattend.ps1; unattend 2
 
@@ -73,15 +72,17 @@ scoop install chris/XPS9320
 
 NOTE: if you replace line separators 'CRLF' with 'LF' in autounattend.xml, it will not run !!
 
-debug env
+debug: init the script's env
 
 ```powershell
-$repo = 'C:\users\chris\unattend'
+$repo = $env:REPO
 $lib = "$repo\lib"
-. C:\users\chris\unattend\unattend.ps1
+. "$repo\unattend.ps1"
 . ${function:glob_src} $lib
 $opt = glob_opt $repo $lib
 ```
+
+debug: ame cli
 
 ```powershell
 $url = "https://github.com/Ameliorated-LLC/trusted-uninstaller-cli/releases/download/0.8.4/CLI-Standalone.zip"
@@ -95,9 +96,10 @@ rm amecli.zip
 ## todo
 
 - [ ] drivers
-    - [x] detect cpu, install matching chipset drivers
-    - [x] detect igpu, install matching driver
-    - [ ] install: drivers
+    - [x] detect cpu, install chipset drivers
+    - [x] detect igpu, install driver
+    - [x] detect discrete nvidia gpu, install driver
+    - [ ] detect discrete amd gpu, install driver
 - [ ] software
     - [ ] obsidian vault sync
 - [ ] tweak
@@ -114,13 +116,20 @@ stretching:
 
 - [ ] programmatically launch tasks after reboot
     - [ ] enable autologin for next boot
-    - [ ] store secrets in env
+    - [ ] store secrets on disk
     - [ ] schedule subsequent script setup2.ps1 to launch with secrets after reboot
 - [ ] automate golden image creation
     - [ ] boot a new base image and apply our mods as default user, then bake into golden image
 - [ ] network boot support
     - [ ] package the iso such that windows will use unattend.xml when pxe booting
     - [ ] package drivers into install environment + booted windows
+- [ ] drivers
+    - This is deceptively tricky. Even the third-party SDIO driver store cannot account for the full hideousness of the 
+    windows driver supply chain (eg realtek network driver on amd 5950x machine causes severe network stutter). The best
+    method we currently have is to invoke driver installer packages distributed by a motherboard manufacturer; I've partially
+    automated this with scoops like chris/XPS9320 etc, but this still leaves much to be desired (to name just a few:
+    manual mobo detection; manual driver package hosting; writing an install script for each manufacturer's package format; 
+    the insanely slow performance of these installers; unknown parallelizability of running these installers).
 
 out of scope, but would be nice:
 

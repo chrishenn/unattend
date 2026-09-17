@@ -62,3 +62,6 @@ windows:
     scoop_private:
       - chris/zenprof
       - chris/portable
+    bootstrap:
+      repo: git@github.com:chrishenn/bootstrap.git
+      dir: ~/Projects/bootstrap
