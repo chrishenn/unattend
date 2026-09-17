@@ -2,7 +2,7 @@ amends "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Config.pk
 
 import "package://github.com/jdx/hk/releases/download/v2.0.1/hk@2.0.1#/Builtins.pkl"
 
-local linters = new Mapping<String, Step> {
+steps {
   ["oxfmt"] = Builtins.oxfmt
   ["shfmt"] = Builtins.shfmt
   ["shellharden"] = Builtins.shellharden
@@ -19,23 +19,8 @@ local linters = new Mapping<String, Step> {
   ["fix_smart_quotes"] = Builtins.fix_smart_quotes
   ["mixed_line_ending"] = Builtins.mixed_line_ending
   ["newlines"] = Builtins.newlines
-  ["trailing_whitespace"] = Builtins.trailing_whitespace
   ["detect_private_key"] = Builtins.detect_private_key
-}
 
-// local linters = new Mapping<String, Step> {
-//   ["trufflehog"] {
-//     workspace_indicator = "hk.pkl"
-//     check = "trufflehog git --fail --no-update --log-level=-1 file://{{workspace}} 2>/dev/null"
-//   }
-// }
-
-hooks {
-  ["check"] {
-    steps = linters
-  }
-  ["fix"] {
-    fix = true
-    steps = linters
-  }
+  // converts our sacred CRLF endings into something else - no bueno
+  // ["trailing_whitespace"] = Builtins.trailing_whitespace
 }

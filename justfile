@@ -1,20 +1,16 @@
 set windows-shell := ['pwsh', '-c']
 
 [unix]
-ssh:
-    $HOST_SSH -At "cd ${HOST_REPO} && pwsh"
-
-[unix]
-cm:
-    $HOST_SSH -At "/users/chris/AppData/Local/mise/shims/chezmoi init chrishenn --apply --force"
+s: sync
 
 [unix]
 sync message="sync":
+    git commit -am "{{ message }}" && git pull && git push
+    
+[unix]
+syncr message="sync":
     git commit -a -m "{{ message }}" || true && git pull && git push
     $HOST_SSH -At "cd ${HOST_REPO} && git pull"
-
-[unix]
-s: sync
 
 [unix]
 sync_init message="sync":
