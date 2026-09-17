@@ -24,7 +24,6 @@ windows:
       - nerd-fonts
       - chris https://github.com/chrishenn/scoops
     scoop_app:
-      - 1password-cli
       - dra
       - driverstoreexplorer
       - eza
@@ -37,7 +36,6 @@ windows:
       - nano
       - obsidian
       - qview
-      - snappy-driver-installer-origin
       - tldr
       - uutils-coreutils
       - vcredist2022
