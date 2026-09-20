@@ -189,14 +189,13 @@ function unattend2 ([hashtable] $opt) {
     cfg_autologin $opt.cfgfile
     cfg_scoop_prv $opt.cfg $opt.cfgfile
 
-    # synced clock required for op to work
+    # synced clock required for op to work - opcli used by mise bootstrap to render secrets
     time_sync_enable
     time_cf
     time_tz_auto
     time_sync
 
-    $env:GITHUB_TOKEN = (op read "op://homelab/github/credential")
-    mise bootstrap --from $opt.cfg.bootstrap.repo --from-dir $opt.cfg.bootstrap.dir --skip-dirty --update -y
+    irm https://raw.githubusercontent.com/chrishenn/bootstrap/main/init.ps1 | iex
     & $opt.amecli $opt.playbook [string]$opt.ameargs
 
     write-host -f green 'main 2 done'

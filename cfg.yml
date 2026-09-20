@@ -24,44 +24,10 @@ windows:
       - nerd-fonts
       - chris https://github.com/chrishenn/scoops
     scoop_app:
-      - dra
-      - driverstoreexplorer
-      - eza
-      - firacode-nf
-      - gh
-      - googlechrome
-      - grep
       - mise
-      - mpv
-      - nano
-      - obsidian
-      - qview
-      - tldr
-      - uutils-coreutils
-      - vcredist2022
-      - which
-      - windowsdesktop-runtime-lts
-      - wiztree
-      - chris/a4dj
-      - chris/amesettings
-      - chris/docker
-      - chris/everything
-      - chris/fpilot
-      - chris/hotkey
-      - chris/lnks
       - chris/openshell
-      - chris/opgui_np
-      - chris/powertoys
       - chris/ssh
-      - chris/steinberg
-      - chris/uavolt
-      - chris/vscode
-      - chris/wt
       - chris/epatcher
-    gh_token: op://homelab/github/credential
-    scoop_private:
-      - chris/zenprof
-      - chris/portable
     bootstrap:
       repo: git@github.com:chrishenn/bootstrap.git
       dir: ~/Projects/bootstrap
