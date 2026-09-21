@@ -19,6 +19,11 @@ steps {
   }
   ["just"] = (Builtins.just_format) {
     fix = new Script {
+      linux =
+        """
+        xargs -d'
+          ' -I {} -- just --fmt --unstable --justfile {}
+        """
       windows = "just --fmt --unstable"
     }
   }

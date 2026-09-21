@@ -95,6 +95,10 @@ rm amecli.zip
 
 ## todo
 
+- moved the drivers func from unattend1 just before update_all, into unattend2's mise bootstrap packages apply
+- moved many scoop installs from unattend1.cfg_scoop to unattend2's mise bootstrap packages apply
+    - are any of these scoop installs silently assumed in any of the intervening functions? sd, rg, etc?
+
 - [ ] drivers
   - [x] detect cpu, install chipset drivers
   - [x] detect igpu, install driver
