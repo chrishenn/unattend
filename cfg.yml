@@ -28,6 +28,3 @@ windows:
       - chris/openshell
       - chris/ssh
       - chris/epatcher
-    bootstrap:
-      repo: git@github.com:chrishenn/bootstrap.git
-      dir: ~/Projects/bootstrap

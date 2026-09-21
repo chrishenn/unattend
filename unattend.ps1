@@ -119,6 +119,7 @@ function tweak_power {
 }
 
 function drivers {
+    # moved into mise bootstrap (https://github.com/chrishenn/bootstrap)
     write-host -f c 'drivers'
 
     $cput = hw_cpu
@@ -159,7 +160,6 @@ function unattend1 ([hashtable] $opt) {
     cfg_scoop $opt.cfg
     sec_pwsh
 
-    drivers
     update_all
     update_activate
 
@@ -195,7 +195,7 @@ function unattend2 ([hashtable] $opt) {
     time_tz_auto
     time_sync
 
-    irm https://raw.githubusercontent.com/chrishenn/bootstrap/main/init.ps1 | iex
+    iex "& {$(irm https://raw.githubusercontent.com/chrishenn/bootstrap/main/init.ps1)} -hw_auto"
     & $opt.amecli $opt.playbook [string]$opt.ameargs
 
     write-host -f green 'main 2 done'

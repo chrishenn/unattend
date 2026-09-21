@@ -6,11 +6,22 @@ steps {
   ["oxfmt"] = Builtins.oxfmt
   ["shfmt"] = Builtins.shfmt
   ["shellharden"] = Builtins.shellharden
-  ["shellcheck"] = Builtins.shellcheck
+  // todo: enable
+  //   ["shellcheck"] = Builtins.shellcheck
 
-  ["pkl"] = Builtins.pkl
   ["pkl_format"] = Builtins.pkl_format
-  ["just"] = Builtins.just_format
+  ["pkl"] = (Builtins.pkl) {
+    glob = "*.pkl"
+    fix = new Script {
+      linux = "pkl eval {{files}} >/dev/null"
+      windows = "pkl eval {{files}}"
+    }
+  }
+  ["just"] = (Builtins.just_format) {
+    fix = new Script {
+      windows = "just --fmt --unstable"
+    }
+  }
   ["mise"] = Builtins.mise
 
   ["check_case_conflict"] = Builtins.check_case_conflict
